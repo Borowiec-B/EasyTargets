@@ -108,7 +108,7 @@ def exit_error_invalid_arguments_count(valid_arguments_count: int, supplied_argu
 
 	exit_error(message)
 
-def exit_error_invalid_arguments_count_range(valid_arguments_count_min: int, valid_arguments_count_max: int, supplied_arguments_count: Optional[int] = None):
+def exit_error_invalid_arguments_count_range(valid_arguments_count_min: Optional[int], valid_arguments_count_max: Optional[int], supplied_arguments_count: Optional[int] = None):
 	"""
 	Exits with error code and prints a message indicating invalid count of supplied arguments, and displays allowed counts.
 
@@ -121,9 +121,17 @@ def exit_error_invalid_arguments_count_range(valid_arguments_count_min: int, val
 		N/A - exits the program with error code.
 	"""
 
-	message = f"Invalid count of arguments. Program takes: [{valid_arguments_count_min}, {valid_arguments_count_max}]."
+	if (valid_arguments_count_min == valid_arguments_count_max == None):
+		raise ValueError("At least one (min or max) limit of range must not be None.")
+
+	message = f"Invalid count of arguments."
+	if (valid_arguments_count_max == None):
+		message += f" Program takes at least {valid_arguments_count_min} arguments."
+	else if (valid_arguments_count_min == None):
+		message += f" Program takes up to {valid_arguments_count_max} arguments."
+
 	if (supplied != None):
-		message = f"{message} Supplied: {supplied_arguments_count}."
+		message += f" Supplied: {supplied_arguments_count}."
 
 	exit_error(message)
 
