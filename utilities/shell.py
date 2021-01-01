@@ -92,7 +92,7 @@ def exit_success(message: Optional[str] = None) -> NoReturn:
 
 def exit_error_invalid_arguments_count(valid_arguments_count: int, supplied_arguments_count: Optional[int] = None):
 	"""
-	Exits with error code and prints a message indicating invalid count of supplied arguments.
+	Exits with error code and prints a message indicating invalid count of supplied arguments, and displays allowed count.
 
 	Args:
 		valid_arguments_count:		Count of arguments which should have been supplied.
@@ -110,7 +110,7 @@ def exit_error_invalid_arguments_count(valid_arguments_count: int, supplied_argu
 
 def exit_error_invalid_arguments_count_range(valid_arguments_count_min: int, valid_arguments_count_max: int, supplied_arguments_count: Optional[int] = None):
 	"""
-	Exits with error code and prints a message indicating invalid count of supplied arguments.
+	Exits with error code and prints a message indicating invalid count of supplied arguments, and displays allowed counts.
 
 	Args:
 		valid_arguments_count_min:	Minimum (inclusive) count of arguments which should have been supplied.
