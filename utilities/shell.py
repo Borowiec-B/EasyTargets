@@ -127,3 +127,40 @@ def exit_error_invalid_arguments_count_range(valid_arguments_count_min: int, val
 
 	exit_error(message)
 
+def assert_arguments_count(input: str, valid_arguments_count: int) -> None:
+	"""
+	Calls exit_error_invalid_arguments_count() if input doesn't contain valid_arguments_count arguments.
+
+	Args:
+		input: All arguments taken from shell as a single string.
+		valid_arguments_count: Count of arguments input must contain to return successfully from this function.
+
+	Returns:
+		Nothing if counts are equal.
+		N/A otherwise - exits the program with error code.
+	"""
+
+	supplied_arguments_count = arguments_count(input)
+
+	if (supplied_arguments_count != valid_arguments_count):
+		exit_error_invalid_arguments_count(valid_arguments_count, supplied_arguments_count)
+
+def assert_arguments_count_range(input: str, valid_arguments_count_min: int, valid_arguments_count_max: int) -> None:
+	"""
+	Calls exit_error_invalid_arguments_count_range() if input's count of arguments is not within [valid_arguments_count_min, valid_arguments_count_max].
+
+	Args:
+		input: All arguments taken from shell as a single string.
+		valid_arguments_count_min: Minimum (inclusive) count of arguments input must contain to return successfully from this function.
+		valid_arguments_count_max: Maximum (inclusive) count of arguments input must contain to return successfully from this function.
+
+	Returns:
+		Nothing if input contains count of arguments within [valid_arguments_count_min, valid_arguments_count_max].
+		N/A otherwise - exits the program with error code.
+	"""
+
+	supplied_arguments_count = arguments_count(input)
+
+	if (supplied_arguments_count != valid_arguments_count):
+		exit_error_invalid_arguments_count(valid_arguments_count, supplied_arguments_count)
+
