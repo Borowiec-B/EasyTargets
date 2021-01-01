@@ -103,7 +103,7 @@ def exit_error_invalid_arguments_count(valid_arguments_count: int, supplied_argu
 	"""
 
 	message = f"Invalid count of arguments. Program takes: {valid_arguments_count}."
-	if (supplied != None):
+	if (supplied_arguments_count != None):
 		message = f"{message} Supplied: {supplied_arguments_count}."
 
 	exit_error(message)
