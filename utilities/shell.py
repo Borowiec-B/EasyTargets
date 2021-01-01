@@ -77,7 +77,7 @@ def exit_error(message: Optional[str] = None) -> NoReturn:
 
 def exit_success(message: Optional[str] = None) -> NoReturn:
 	"""
-	Optionally print a message and call sys.exit with success code.
+	Optionally prints a message and calls sys.exit with success code.
 
 	Args:
 		message: String to print before exiting, or None to not print anything.
@@ -90,10 +90,9 @@ def exit_success(message: Optional[str] = None) -> NoReturn:
 		print(message)
 	sys.exit(EXIT_SUCCESS)
 
-
 def exit_error_invalid_arguments_count(valid_arguments_count: int, supplied_arguments_count: Optional[int] = None):
 	"""
-	Exit with error code and print a message indicating invalid count of supplied arguments.
+	Exits with error code and prints a message indicating invalid count of supplied arguments.
 
 	Args:
 		valid_arguments_count:		Count of arguments which should have been supplied.
@@ -111,7 +110,7 @@ def exit_error_invalid_arguments_count(valid_arguments_count: int, supplied_argu
 
 def exit_error_invalid_arguments_count_range(valid_arguments_count_min: int, valid_arguments_count_max: int, supplied_arguments_count: Optional[int] = None):
 	"""
-	Exit with error code and print a message indicating invalid count of supplied arguments.
+	Exits with error code and prints a message indicating invalid count of supplied arguments.
 
 	Args:
 		valid_arguments_count_min:	Minimum (inclusive) count of arguments which should have been supplied.
