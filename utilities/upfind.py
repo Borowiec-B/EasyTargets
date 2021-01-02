@@ -61,7 +61,7 @@ def upfind(target_filename: str, last_directory_to_check: str = "/") -> Optional
 		current_search_directory = directory_up(current_search_directory)
 
 def upfind_parent(target_filename: str, last_directory_to_check: str = "/") -> Optional[str]:
-	""" Same as upfind(), but return parent directory of its result.
+	""" Same as upfind(), but returns parent directory of its result.
 	"""
 	return directory_up(upfind(target_filename, last_directory_to_check))
 
