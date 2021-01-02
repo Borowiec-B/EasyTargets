@@ -166,7 +166,7 @@ def assert_arguments_count_range(input: str, valid_count_min: Optional[int], val
 		valid_count_max: Maximum (inclusive) count of arguments input must contain to return successfully from this function. None if count is allowed to be in [min, ∞).
 
 	Returns:
-		Nothing if input contains count of arguments within [valid_arguments_count_min, valid_arguments_count_max].
+		Nothing if input contains allowed count of arguments.
 		N/A otherwise - exits the program with error code.
 	"""
 
