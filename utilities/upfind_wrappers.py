@@ -44,3 +44,11 @@ def upfind_any(input: str) -> NoReturn:
 		shell.exit_error()
 	
 	shell.exit_success(result)
+
+def wrappers():
+	return {
+		"upfind":		 upfind,
+		"upfind_parent": upfind_parent,
+		"upfind_any":	 upfind_any
+	}
+
