@@ -130,7 +130,7 @@ def exit_error_invalid_arguments_count_range(valid_arguments_count_min: Optional
 	elif (valid_arguments_count_min == None):
 		message += f" Program takes up to {valid_arguments_count_max} arguments."
 
-	if (supplied != None):
+	if (supplied_arguments_count != None):
 		message += f" Supplied: {supplied_arguments_count}."
 
 	exit_error(message)
