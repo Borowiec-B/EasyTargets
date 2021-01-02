@@ -20,7 +20,7 @@ def input_to_list(input: str) -> list:
 
 	return input.split()
 
-def arguments_count(input: str) -> int:
+def args_count(input: str) -> int:
 	"""
 	Returns amount of arguments in string, using space as separator.
 
@@ -33,7 +33,7 @@ def arguments_count(input: str) -> int:
 
 	return len(input_to_list(input))
 
-def test_arguments_count_equal(input: str, target: int) -> bool:
+def test_args_count_equal(input: str, target: int) -> bool:
 	"""
 	Tests if string contains target amount of arguments.
 
@@ -44,9 +44,9 @@ def test_arguments_count_equal(input: str, target: int) -> bool:
 		Boolean indicating if input contains target amount of arguments.
 	"""
 
-	return (arguments_count(input) == target)
+	return (args_count(input) == target)
 
-def test_arguments_count_in_range(input: str, min: int, max: int) -> bool:
+def test_args_count_in_range(input: str, min: int, max: int) -> bool:
 	"""
 	Tests if string contains amount of arguments between min and max (inclusive).
 
@@ -57,8 +57,8 @@ def test_arguments_count_in_range(input: str, min: int, max: int) -> bool:
 		Boolean indicating if input's amount of arguments is within [min, max].
 	"""
 
-	args_count = arguments_count(input)
-	return (args_count >= min and args_count <= max)
+	count = args_count(input)
+	return (count >= min and count <= max)
 
 def exit_error(message: Optional[str] = None) -> NoReturn:
 	"""
@@ -90,7 +90,7 @@ def exit_success(message: Optional[str] = None) -> NoReturn:
 		print(message)
 	sys.exit(EXIT_SUCCESS)
 
-def exit_error_invalid_arguments_count(valid_count: int, supplied_count: Optional[int] = None):
+def exit_error_invalid_args_count(valid_count: int, supplied_count: Optional[int] = None):
 	"""
 	Exits with error code and prints a message indicating invalid count of supplied arguments, and displays allowed count.
 
@@ -102,13 +102,13 @@ def exit_error_invalid_arguments_count(valid_count: int, supplied_count: Optiona
 		N/A - exits the program with error code.
 	"""
 
-	message = f"Invalid count of arguments. Program takes: {arguments_count}."
+	message = f"Invalid count of arguments. Program takes: {valid_count}."
 	if (supplied_count != None):
-		message = f"{message} Supplied: {arguments_count}."
+		message = f"{message} Supplied: {supplied_count}."
 
 	exit_error(message)
 
-def exit_error_invalid_arguments_count_range(valid_count_min: Optional[int], valid_count_max: Optional[int], supplied_count: Optional[int] = None):
+def exit_error_invalid_args_count_range(valid_count_min: Optional[int], valid_count_max: Optional[int], supplied_count: Optional[int] = None):
 	"""
 	Exits with error code and prints a message indicating invalid count of supplied arguments, and displays allowed counts.
 
@@ -137,9 +137,9 @@ def exit_error_invalid_arguments_count_range(valid_count_min: Optional[int], val
 
 	exit_error(message)
 
-def assert_arguments_count(input: str, valid_count: int) -> None:
+def assert_args_count(input: str, valid_count: int) -> None:
 	"""
-	Calls exit_error_invalid_arguments_count() if input doesn't contain valid_count arguments.
+	Calls exit_error_invalid_args_count() if input doesn't contain valid_count arguments.
 
 	Args:
 		input: All arguments taken from shell as a single string.
@@ -150,12 +150,12 @@ def assert_arguments_count(input: str, valid_count: int) -> None:
 		N/A otherwise - exits the program with error code.
 	"""
 
-	supplied_count = arguments_count(input)
+	supplied_count = args_count(input)
 
 	if (supplied_count != valid_count):
-		exit_error_invalid_arguments_count(valid_count, supplied_count)
+		exit_error_invalid_args_count(valid_count, supplied_count)
 
-def assert_arguments_count_range(input: str, valid_count_min: Optional[int], valid_count_max: Optional[int]) -> None:
+def assert_args_count_range(input: str, valid_count_min: Optional[int], valid_count_max: Optional[int]) -> None:
 	"""
 	Calls exit_error_invalid_arguments_count_range() if input's count of arguments is not within [valid_count_min, valid_count_max].
 	Either min or max can be omitted.
@@ -180,10 +180,10 @@ def assert_arguments_count_range(input: str, valid_count_min: Optional[int], val
 		raise ValueError("Minimum count must not be higher than maximum count.")
 
 
-	supplied_count = arguments_count(input)
+	supplied_count = args_count(input)
 	if ((valid_count_max == None and supplied_count < valid_count_min) or # Trigger error if supplied_count is outside of allowed range [min, ∞).
 		(valid_count_min == None and supplied_count > valid_count_max) or # Trigger error if supplied_count is outside of allowed range (∞, max].
 		(valid_count_min != None and valid_count_max != None and not valid_count_min <= supplied_count <= valid_count_max) # Trigger error if supplied_count is outside of allowed range [min, max].
 		):
-		exit_error_invalid_arguments_count_range(valid_count_min, valid_count_max, supplied_count)
+		exit_error_invalid_args_count_range(valid_count_min, valid_count_max, supplied_count)
 

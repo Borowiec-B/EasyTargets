@@ -16,7 +16,7 @@ from typing import NoReturn
 
 
 def upfind(input: str) -> NoReturn:
-	shell.assert_arguments_count_range(input, 1, 2)
+	shell.assert_args_count_range(input, 1, 2)
 
 	result = upfind_raw.upfind(*shell.input_to_list(input))
 
@@ -26,7 +26,7 @@ def upfind(input: str) -> NoReturn:
 	shell.exit_success(result)
 
 def upfind_parent(input: str) -> NoReturn:
-	shell.assert_arguments_count_range(input, 1, 2)
+	shell.assert_args_count_range(input, 1, 2)
 
 	result = upfind_raw.upfind_parent(*shell.input_to_list(input))
 
@@ -36,7 +36,7 @@ def upfind_parent(input: str) -> NoReturn:
 	shell.exit_success(result)
 
 def upfind_any(input: str) -> NoReturn:
-	shell.assert_arguments_count_range(input, 1, None)
+	shell.assert_args_count_range(input, 1, None)
 
 	result = upfind_raw.upfind_any(*shell.input_to_list(input))
 
