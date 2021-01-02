@@ -90,98 +90,100 @@ def exit_success(message: Optional[str] = None) -> NoReturn:
 		print(message)
 	sys.exit(EXIT_SUCCESS)
 
-def exit_error_invalid_arguments_count(valid_arguments_count: int, supplied_arguments_count: Optional[int] = None):
+def exit_error_invalid_arguments_count(valid_count: int, supplied_count: Optional[int] = None):
 	"""
 	Exits with error code and prints a message indicating invalid count of supplied arguments, and displays allowed count.
 
 	Args:
-		valid_arguments_count:		Count of arguments which should have been supplied.
-		supplied_arguments_count:	Count of arguments which have been supplied.
+		valid_count:	Count of arguments which should have been supplied.
+		supplied_count:	Count of arguments which have been supplied.
 
 	Returns:
 		N/A - exits the program with error code.
 	"""
 
-	message = f"Invalid count of arguments. Program takes: {valid_arguments_count}."
-	if (supplied_arguments_count != None):
-		message = f"{message} Supplied: {supplied_arguments_count}."
+	message = f"Invalid count of arguments. Program takes: {arguments_count}."
+	if (supplied_count != None):
+		message = f"{message} Supplied: {arguments_count}."
 
 	exit_error(message)
 
-def exit_error_invalid_arguments_count_range(valid_arguments_count_min: Optional[int], valid_arguments_count_max: Optional[int], supplied_arguments_count: Optional[int] = None):
+def exit_error_invalid_arguments_count_range(valid_count_min: Optional[int], valid_count_max: Optional[int], supplied_count: Optional[int] = None):
 	"""
 	Exits with error code and prints a message indicating invalid count of supplied arguments, and displays allowed counts.
 
 	Args:
-		valid_arguments_count_min:	Minimum (inclusive) count of arguments which should have been supplied.
-		valid_arguments_count_max:	Maximum (inclusive) count of arguments which should have been supplied.
-		supplied_arguments_count:	Count of arguments which have been supplied.
+		valid_count_min: Minimum (inclusive) count of arguments which should have been supplied. None for (∞, max].
+		valid_count_max: Maximum (inclusive) count of arguments which should have been supplied. None for [min, ∞).
+		supplied_count:	 Count of arguments which have been supplied. Can be omitted.
 	
 	Returns:
 		N/A - exits the program with error code.
 	"""
 
-	if (valid_arguments_count_min == valid_arguments_count_max == None):
+	if (valid_count_min == valid_count_max == None):
 		raise ValueError("At least one (min or max) limit of range must not be None.")
 
 	message = f"Invalid count of arguments."
-	if (valid_arguments_count_max == None):
-		message += f" Program takes at least {valid_arguments_count_min} arguments."
-	elif (valid_arguments_count_min == None):
-		message += f" Program takes up to {valid_arguments_count_max} arguments."
+	if (valid_count_max == None):
+		message += f" Program takes at least {valid_count_min} arguments."
+	elif (valid_count_min == None):
+		message += f" Program takes up to {valid_count_max} arguments."
+	else:
+		message += f" Program takes between {valid_count_min} and {valid_count_max} arguments."
 
-	if (supplied_arguments_count != None):
-		message += f" Supplied: {supplied_arguments_count}."
+	if (supplied_count != None):
+		message += f" Supplied: {supplied_count}."
 
 	exit_error(message)
 
-def assert_arguments_count(input: str, valid_arguments_count: int) -> None:
+def assert_arguments_count(input: str, valid_count: int) -> None:
 	"""
-	Calls exit_error_invalid_arguments_count() if input doesn't contain valid_arguments_count arguments.
+	Calls exit_error_invalid_arguments_count() if input doesn't contain valid_count arguments.
 
 	Args:
 		input: All arguments taken from shell as a single string.
-		valid_arguments_count: Count of arguments input must contain to return successfully from this function.
+		valid_count: Count of arguments input must contain to successfully return from this function.
 
 	Returns:
 		Nothing if counts are equal.
 		N/A otherwise - exits the program with error code.
 	"""
 
-	supplied_arguments_count = arguments_count(input)
+	supplied_count = arguments_count(input)
 
-	if (supplied_arguments_count != valid_arguments_count):
-		exit_error_invalid_arguments_count(valid_arguments_count, supplied_arguments_count)
+	if (supplied_count != valid_count):
+		exit_error_invalid_arguments_count(valid_count, supplied_count)
 
-def assert_arguments_count_range(input: str, valid_arguments_count_min: Optional[int], valid_arguments_count_max: Optional[int]) -> None:
+def assert_arguments_count_range(input: str, valid_count_min: Optional[int], valid_count_max: Optional[int]) -> None:
 	"""
-	Calls exit_error_invalid_arguments_count_range() if input's count of arguments is not within [valid_arguments_count_min, valid_arguments_count_max].
+	Calls exit_error_invalid_arguments_count_range() if input's count of arguments is not within [valid_count_min, valid_count_max].
 	Either min or max can be omitted.
 
 	Args:
 		input: All arguments taken from shell as a single string.
-		valid_arguments_count_min: Minimum (inclusive) count of arguments input must contain to return successfully from this function. None if count can be anything <= max.
-		valid_arguments_count_max: Maximum (inclusive) count of arguments input must contain to return successfully from this function. None if count can be anything >= min.
+		valid_count_min: Minimum (inclusive) count of arguments input must contain to return successfully from this function. None if count is allowed to be in (∞, max].
+		valid_count_max: Maximum (inclusive) count of arguments input must contain to return successfully from this function. None if count is allowed to be in [min, ∞).
 
 	Returns:
 		Nothing if input contains count of arguments within [valid_arguments_count_min, valid_arguments_count_max].
 		N/A otherwise - exits the program with error code.
 	"""
 
-	if (valid_arguments_count_min == valid_arguments_count_max == None):
+	if (valid_count_min == valid_count_max == None):
 		raise ValueError("At least one (min or max) limit of range must not be None.")
 
-	if (valid_arguments_count_min != None and
-		valid_arguments_count_max != None and
-		valid_arguments_count_min > valid_arguments_count_max
+	if (valid_count_min != None and
+		valid_count_max != None and
+		valid_count_min > valid_count_max
 		):
 		raise ValueError("Minimum count must not be higher than maximum count.")
 
 
-	supplied_arguments_count = arguments_count(input)
-	if ((valid_arguments_count_max == None and supplied_arguments_count < valid_arguments_count_min) or # Trigger error if supplied_arguments_count is outside of allowed range [min, ∞).
-		(valid_arguments_count_min == None and supplied_arguments_count > valid_arguments_count_max) or # Trigger error if supplied_arguments_count is outside of allowed range (∞, max].
-		(valid_arguments_count_min != None and valid_arguments_count_max != None and not valid_arguments_count_min <= supplied_arguments_count <= valid_arguments_count_max) # Trigger error if supplied_arguments_count is outside of allowed range [min, max].
+	supplied_count = arguments_count(input)
+	if ((valid_count_max == None and supplied_count < valid_count_min) or # Trigger error if supplied_count is outside of allowed range [min, ∞).
+		(valid_count_min == None and supplied_count > valid_count_max) or # Trigger error if supplied_count is outside of allowed range (∞, max].
+		(valid_count_min != None and valid_count_max != None and not valid_count_min <= supplied_count <= valid_count_max) # Trigger error if supplied_count is outside of allowed range [min, max].
 		):
-		exit_error_invalid_arguments_count_range(valid_arguments_count_min, valid_arguments_count_max, supplied_arguments_count)
+		exit_error_invalid_arguments_count_range(valid_count_min, valid_count_max, supplied_count)
 
