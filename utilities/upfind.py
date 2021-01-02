@@ -63,7 +63,11 @@ def upfind(target_filename: str, last_directory_to_check: str = "/") -> Optional
 def upfind_parent(target_filename: str, last_directory_to_check: str = "/") -> Optional[str]:
 	""" Same as upfind(), but returns parent directory of its result.
 	"""
-	return directory_up(upfind(target_filename, last_directory_to_check))
+	# If upfind() returns None on unsuccessful search, directory_up is gonna throw.
+	try:
+		return directory_up(upfind(target_filename, last_directory_to_check))
+	except TypeError:
+		return None
 
 def upfind_any(*target_filenames: str, last_directory_to_check: str = "/") -> Optional[str]:
 	"""
