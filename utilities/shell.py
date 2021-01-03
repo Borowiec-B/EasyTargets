@@ -7,57 +7,45 @@ from typing import NoReturn, Optional
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 
-def input_to_list(input: str) -> list:
+
+def args_count(args: list) -> int:
 	"""
-	Converts string into a list, using space as separator.
+	Returns amount of arguments (items) in a list.
 
 	Args:
-		input: All arguments taken from shell as a single string.
+		args: List of shell arguments.
 
 	Returns:
-		A list of arguments obtained from input.
+		Length of args.
 	"""
 
-	return input.split()
+	return len(args)
 
-def args_count(input: str) -> int:
+def test_args_count_equal(args: list, target: int) -> bool:
 	"""
-	Returns amount of arguments in string, using space as separator.
+	Tests if args contains target amount of arguments.
 
 	Args:
-		input: All arguments taken from shell as a single string.
+		args: List of shell arguments.
 
 	Returns:
-		Length of list of arguments created from input.
+		Boolean indicating if args contains target amount of arguments.
 	"""
 
-	return len(input_to_list(input))
+	return (args_count(args) == target)
 
-def test_args_count_equal(input: str, target: int) -> bool:
+def test_args_count_in_range(args: list, min: int, max: int) -> bool:
 	"""
-	Tests if string contains target amount of arguments.
+	Tests if args contains amount of arguments between min and max (inclusive).
 
 	Args:
-		input: All arguments taken from shell as a single string.
+		args: List of shell arguments.
 
 	Returns:
-		Boolean indicating if input contains target amount of arguments.
+		Boolean indicating if args's amount of arguments is within [min, max].
 	"""
 
-	return (args_count(input) == target)
-
-def test_args_count_in_range(input: str, min: int, max: int) -> bool:
-	"""
-	Tests if string contains amount of arguments between min and max (inclusive).
-
-	Args:
-		input: All arguments taken from shell as a single string.
-
-	Returns:
-		Boolean indicating if input's amount of arguments is within [min, max].
-	"""
-
-	count = args_count(input)
+	count = args_count(args)
 	return (count >= min and count <= max)
 
 def exit_error(message: Optional[str] = None) -> NoReturn:
@@ -137,31 +125,31 @@ def exit_error_invalid_args_count_range(valid_count_min: Optional[int], valid_co
 
 	exit_error(message)
 
-def assert_args_count(input: str, valid_count: int) -> None:
+def assert_args_count(args: list, valid_count: int) -> None:
 	"""
-	Calls exit_error_invalid_args_count() if input doesn't contain valid_count arguments.
+	Calls exit_error_invalid_args_count() if args doesn't contain valid_count arguments.
 
 	Args:
-		input: All arguments taken from shell as a single string.
-		valid_count: Count of arguments input must contain to successfully return from this function.
+		args: List of shell arguments.
+		valid_count: Count of arguments args must contain to successfully return from this function.
 
 	Returns:
 		Nothing if counts are equal.
 		N/A otherwise - exits the program with error code.
 	"""
 
-	supplied_count = args_count(input)
+	supplied_count = args_count(args)
 
 	if (supplied_count != valid_count):
 		exit_error_invalid_args_count(valid_count, supplied_count)
 
-def assert_args_count_range(input: str, valid_count_min: Optional[int], valid_count_max: Optional[int]) -> None:
+def assert_args_count_range(args: list, valid_count_min: Optional[int], valid_count_max: Optional[int]) -> None:
 	"""
-	Calls exit_error_invalid_arguments_count_range() if input's count of arguments is not within [valid_count_min, valid_count_max].
+	Calls exit_error_invalid_arguments_count_range() if args's count of arguments is not within [valid_count_min, valid_count_max].
 	Either min or max can be omitted.
 
 	Args:
-		input: All arguments taken from shell as a single string.
+		args: List of shell arguments.
 		valid_count_min: Minimum (inclusive) count of arguments input must contain to return successfully from this function. None if count is allowed to be in (∞, max].
 		valid_count_max: Maximum (inclusive) count of arguments input must contain to return successfully from this function. None if count is allowed to be in [min, ∞).
 
@@ -180,7 +168,7 @@ def assert_args_count_range(input: str, valid_count_min: Optional[int], valid_co
 		raise ValueError("Minimum count must not be higher than maximum count.")
 
 
-	supplied_count = args_count(input)
+	supplied_count = args_count(args)
 	if ((valid_count_max == None and supplied_count < valid_count_min) or # Trigger error if supplied_count is outside of allowed range [min, ∞).
 		(valid_count_min == None and supplied_count > valid_count_max) or # Trigger error if supplied_count is outside of allowed range (∞, max].
 		(valid_count_min != None and valid_count_max != None and not valid_count_min <= supplied_count <= valid_count_max) # Trigger error if supplied_count is outside of allowed range [min, max].
