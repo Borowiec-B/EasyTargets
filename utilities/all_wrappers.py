@@ -3,6 +3,7 @@ from shell import exit_error
 from typing import NoReturn
 import upfind_wrappers
 
+
 all_wrappers = upfind_wrappers.wrappers()
 
 def exit_wrapper_not_found(name: str) -> NoReturn:
