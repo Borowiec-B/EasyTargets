@@ -87,3 +87,4 @@ def upfind_any(*target_filenames: str, last_directory_to_check: str = "/") -> Op
 			return result
 
 	return None;
+
