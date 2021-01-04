@@ -11,7 +11,7 @@ usage="Usage: (to be written)"
 if [ $getopt_status -ne 0 ]; then
 	echo -e "Invalid options.\n"
 	echo "$usage"
-	exit
+	exit 1
 fi
 
 eval set -- "$new_args"
