@@ -4,8 +4,13 @@ options=""
 longopts=""
 progname="EasyTargets"
 new_args="$(getopt --quiet --options "$options" --longoptions "$longopts" --name "$progname" -- "$@")"
+getopt_status=$?
 
-if [ $? -ne 0 ]; then
+usage="Usage: (to be written)"
+
+if [ $getopt_status -ne 0 ]; then
+	echo -e "Invalid options.\n"
+	echo "$usage"
 	exit
 fi
 
