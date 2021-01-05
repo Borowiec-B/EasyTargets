@@ -1,18 +1,17 @@
 #!/usr/bin/sh
 
-options="r"
-longopts="run"
+options="rt:"
+longopts="run,target-file:"
 progname="EasyTargets"
 new_args="$(getopt --quiet --options "$options" --longoptions "$longopts" --name "$progname" -- "$@")"
 getopt_status=$?
+usage="Usage: (to be written)"
 
 if [ $getopt_status -ne 0 ]; then
 	echo -e "Invalid options.\n"
 	echo "$usage"
 	exit 1
 fi
-
-usage="Usage: (to be written)"
 
 run_selected_cmd() {
 	local default_filename=".target.sh"
@@ -39,11 +38,17 @@ run_selected_cmd() {
 
 eval set -- "$new_args"
 
+r="true"
+
 while true; do
 	case "$1" in
 		"-r"|"--run")
-			run_selected_cmd
-			break
+			r="true"
+			shift
+			;;
+		"-t"|"--target-file")
+			selected_cmd_filename="$2"
+			shift 2
 			;;
 		--)
 			shift
@@ -55,4 +60,8 @@ while true; do
 			;;
 	esac
 done
+
+if [ "$r" = "true" ]; then
+	run_selected_cmd "$selected_cmd_filename"
+fi
 
