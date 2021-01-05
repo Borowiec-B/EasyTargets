@@ -1,7 +1,7 @@
 #!/usr/bin/sh
 
-options="rt:"
-longopts="run,target-file:"
+options="et:"
+longopts="execute,target-file:"
 progname="EasyTargets"
 new_args="$(getopt --quiet --options "$options" --longoptions "$longopts" --name "$progname" -- "$@")"
 getopt_status=$?
@@ -13,41 +13,40 @@ if [ $getopt_status -ne 0 ]; then
 	exit 1
 fi
 
-run_selected_cmd() {
+execute_file() {
 	local default_filename=".target.sh"
-	local cmd_filename="$1"
 
-	if [ -z "$cmd_filename" ]; then
-		cmd_filename="$default_filename"
+	if [ -z "$target_filename" ]; then
+		target_filename="$default_filename"
 	fi
 
-	local cmd_filepath
+	local target_filepath
 	# Upfind returns an absolute path.
-	cmd_filepath="$(./utilities/call_wrapper.py upfind "$cmd_filename")"
+	target_filepath="$(./utilities/call_wrapper.py upfind "$target_filename")"
 	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
-		echo "Error: \"$cmd_filename\" was not found."
+		echo "Error: \"$target_filename\" was not found."
 		exit 1
 	else
-		cd "$(dirname "$cmd_filepath")"
-		"$cmd_filepath"
+		cd "$(dirname "$target_filepath")"
+		"$target_filepath"
 	fi
 }
 
 
 eval set -- "$new_args"
 
-r="true"
+e="false"
 
 while true; do
 	case "$1" in
-		"-r"|"--run")
-			r="true"
+		"-e"|"--execute")
+			e="true"
 			shift
 			;;
 		"-t"|"--target-file")
-			selected_cmd_filename="$2"
+			target_filename="$2"
 			shift 2
 			;;
 		--)
@@ -61,7 +60,7 @@ while true; do
 	esac
 done
 
-if [ "$r" = "true" ]; then
-	run_selected_cmd "$selected_cmd_filename"
+if [ "$e" = "true" ]; then
+	execute_file "$target_filename"
 fi
 
