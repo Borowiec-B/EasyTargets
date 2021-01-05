@@ -15,18 +15,25 @@ fi
 usage="Usage: (to be written)"
 
 run_selected_cmd() {
-	default_filename=".target.sh"
-	cmd_filename="$1"
+	local default_filename=".target.sh"
+	local cmd_filename="$1"
 
 	if [ -z "$cmd_filename" ]; then
 		cmd_filename="$default_filename"
 	fi
 
-	# Upfind returns an absolute path
+	local cmd_filepath
+	# Upfind returns an absolute path.
 	cmd_filepath="$(./utilities/call_wrapper.py upfind "$cmd_filename")"
+	local search_status=$?
 
-	cd "$(dirname "$cmd_filepath")"
-	"$cmd_filepath"
+	if [ $search_status -ne 0 ]; then
+		echo "Error: \"$cmd_filename\" was not found."
+		exit 1
+	else
+		cd "$(dirname "$cmd_filepath")"
+		"$cmd_filepath"
+	fi
 }
 
 
