@@ -15,9 +15,10 @@ fi
 
 execute_file() {
 	local default_filename=".target.sh"
+	local target_filename="$default_filename"
 
-	if [ -z "$target_filename" ]; then
-		target_filename="$default_filename"
+	if [ ! -z "$1" ]; then
+		target_filename="$1"
 	fi
 
 	local target_filepath
@@ -38,6 +39,7 @@ execute_file() {
 eval set -- "$new_args"
 
 e="false"
+t=""
 
 while true; do
 	case "$1" in
@@ -46,7 +48,7 @@ while true; do
 			shift
 			;;
 		"-t"|"--target-file")
-			target_filename="$2"
+			t="$2"
 			shift 2
 			;;
 		--)
@@ -61,6 +63,6 @@ while true; do
 done
 
 if [ "$e" = "true" ]; then
-	execute_file "$target_filename"
+	execute_file "$t"
 fi
 
