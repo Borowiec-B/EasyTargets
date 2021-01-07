@@ -18,22 +18,14 @@ if [ $getopt_status -ne 0 ]; then
 fi
 
 find_target_file() {
-	local default_filename=".targets.sh"
-
-	if [ ! -z "$t" ]; then
-		local filename_to_search="$t"
-	else
-		local filename_to_search="$default_filename"
-	fi
-
-	local found_filepath
-	found_filepath="$(./utilities/call_wrapper.py upfind "$filename_to_search")"
+	local target_filepath
+	target_filepath="$(./utilities/call_wrapper.py upfind "$t")"
 	local search_status=$?
 	
 	if [ $search_status -ne 0 ]; then
 		return 1
 	else
-		echo -n "$found_filepath"
+		echo -n "$target_filepath"
 		return 0
 	fi
 }
