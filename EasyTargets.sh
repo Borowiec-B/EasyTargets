@@ -7,6 +7,10 @@ new_args="$(getopt --quiet --options "$options" --longoptions "$longopts" --name
 getopt_status=$?
 usage="Usage: (to be written)"
 
+e="false"
+t=""
+default_t=".target.sh"
+
 if [ $getopt_status -ne 0 ]; then
 	echo -e "Invalid options.\n"
 	echo "$usage"
@@ -16,8 +20,8 @@ fi
 find_target_file() {
 	local default_filename=".targets.sh"
 
-	if [ ! -z "$1" ]; then
-		local filename_to_search="$1"
+	if [ ! -z "$t" ]; then
+		local filename_to_search="$t"
 	else
 		local filename_to_search="$default_filename"
 	fi
@@ -34,13 +38,13 @@ find_target_file() {
 	fi
 }
 
-execute_file() {
+execute_target_file() {
 	local target_filepath
-	target_filepath="$(find_target_file "$1")"
+	target_filepath="$(find_target_file)"
 	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
-		echo "Error: Target file was not found."
+		echo "Error: Target file \"$t\" was not found."
 		exit 1
 	else
 		cd "$(dirname "$target_filepath")"
@@ -50,9 +54,6 @@ execute_file() {
 
 
 eval set -- "$new_args"
-
-e="false"
-t=""
 
 while true; do
 	case "$1" in
@@ -75,7 +76,11 @@ while true; do
 	esac
 done
 
+if [ -z "$t" ]; then
+	t="$default_t"
+fi
+
 if [ "$e" = "true" ]; then
-	execute_file "$t"
+	execute_target_file
 fi
 
