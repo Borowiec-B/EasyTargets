@@ -31,16 +31,12 @@ upfind_file() {
 }
 
 find_target_file() {
-	local target_filepath
-	target_filepath="$(./utilities/call_wrapper.py upfind "$t")"
+	local filepath
+	filepath="$(upfind_file "$t")"
 	local search_status=$?
 
-	if [ $search_status -ne 0 ]; then
-		return 1
-	else
-		echo -n "$target_filepath"
-		return 0
-	fi
+	echo -n "$filepath"
+	return $search_status
 }
 
 execute_target_file() {
