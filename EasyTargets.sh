@@ -13,21 +13,34 @@ if [ $getopt_status -ne 0 ]; then
 	exit 1
 fi
 
-execute_file() {
-	local default_filename=".target.sh"
-	local target_filename="$default_filename"
+find_target_file() {
+	local default_filename=".targets.sh"
 
 	if [ ! -z "$1" ]; then
-		target_filename="$1"
+		local filename_to_search="$1"
+	else
+		local filename_to_search="$default_filename"
 	fi
 
+	local found_filepath
+	found_filepath="$(./utilities/call_wrapper.py upfind "$filename_to_search")"
+	local search_status=$?
+	
+	if [ $search_status -ne 0 ]; then
+		return 1
+	else
+		echo -n "$found_filepath"
+		return 0
+	fi
+}
+
+execute_file() {
 	local target_filepath
-	# Upfind returns an absolute path.
-	target_filepath="$(./utilities/call_wrapper.py upfind "$target_filename")"
+	target_filepath="$(find_target_file "$1")"
 	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
-		echo "Error: \"$target_filename\" was not found."
+		echo "Error: Target file was not found."
 		exit 1
 	else
 		cd "$(dirname "$target_filepath")"
