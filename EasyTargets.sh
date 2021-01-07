@@ -17,11 +17,24 @@ if [ $getopt_status -ne 0 ]; then
 	exit 1
 fi
 
+upfind_file() {
+	local filepath
+	filepath="$(./utilities/call_wrapper.py upfind "$1")"
+	local search_status=$?
+
+	if [ $search_status -ne 0 ]; then
+		return 1
+	else
+		echo -n "$filepath"
+		return 0
+	fi
+}
+
 find_target_file() {
 	local target_filepath
 	target_filepath="$(./utilities/call_wrapper.py upfind "$t")"
 	local search_status=$?
-	
+
 	if [ $search_status -ne 0 ]; then
 		return 1
 	else
