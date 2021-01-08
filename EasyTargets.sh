@@ -1,7 +1,7 @@
 #!/usr/bin/sh
 
-options="et:"
-longopts="execute,target-file:"
+options="est:T:"
+longopts="execute,select,target-file:,targets-file:"
 progname="EasyTargets"
 new_args="$(getopt --quiet --options "$options" --longoptions "$longopts" --name "$progname" -- "$@")"
 getopt_status=$?
@@ -10,6 +10,8 @@ usage="Usage: (to be written)"
 e="false"
 t=""
 default_t=".target.sh"
+T=""
+default_T=".targets"
 
 if [ $getopt_status -ne 0 ]; then
 	echo -e "Invalid options.\n"
@@ -66,6 +68,10 @@ while true; do
 			t="$2"
 			shift 2
 			;;
+		"-T"|"--targets-file")
+			T="$2"
+			shift 2
+			;;
 		--)
 			shift
 			break
@@ -79,6 +85,10 @@ done
 
 if [ -z "$t" ]; then
 	t="$default_t"
+fi
+
+if [ -z "$T" ]; then
+	T="$default_T"
 fi
 
 if [ "$e" = "true" ]; then
