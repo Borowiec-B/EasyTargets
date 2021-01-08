@@ -64,6 +64,27 @@ execute_target_file() {
 	fi
 }
 
+write_target_file() {
+	local target_filepath
+	target_filepath="$(find_target_file)"
+	local search_status=$?
+
+	if [ $search_status -ne 0 ]; then
+		echo "Error: Target file \"$t\" was not found."
+		exit 1
+	fi
+
+	echo "$@" > "$target_filepath"
+	local write_status=$?
+
+	if [ $write_status -ne 0 ]; then
+		echo "Error: Couldn't write to file \"$t\"."
+		exit 1
+	fi
+
+	return 0
+}
+
 
 eval set -- "$new_args"
 
