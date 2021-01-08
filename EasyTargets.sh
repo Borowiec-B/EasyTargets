@@ -41,6 +41,15 @@ find_target_file() {
 	return $search_status
 }
 
+find_targets_file() {
+	local filepath
+	filepath="$(upfind_file "$T")"
+	local search_status=$?
+
+	echo -n "$filepath"
+	return $search_status
+}
+
 execute_target_file() {
 	local target_filepath
 	target_filepath="$(find_target_file)"
