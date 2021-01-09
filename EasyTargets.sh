@@ -78,14 +78,14 @@ write_target_file() {
 	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
-		exit 1
+		return 1
 	fi
 
 	echo "$@" > "$target_filepath"
 	local write_status=$?
 
 	if [ $write_status -ne 0 ]; then
-		exit 1
+		return 1
 	fi
 
 	return 0
