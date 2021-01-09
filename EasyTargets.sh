@@ -124,6 +124,10 @@ prefix_with_line_numbers() {
 	done <<< "$@"
 }
 
+remove_whitespace_lines() {
+	sed '/^\s*$/d' <<< "$@"
+}
+
 
 eval set -- "$new_args"
 
