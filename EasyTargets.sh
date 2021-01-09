@@ -144,6 +144,23 @@ print_targets_processed_for_display() {
 	echo "$processed_targets"
 }
 
+is_valid_integer() {
+	local num_lines=$(wc --lines <<< "$@")
+
+	if [ $num_lines -ne 1 ]; then
+		return $(false)
+	fi
+
+	local first_line="$(head --lines=1 - <<< "$@")"
+
+	# Sed prints output only if $first_line is a valid integer.
+	if [ -z "$(sed --quiet -E --expression '/^-?([1-9][0-9]*|0)$/p' <<< "$first_line")" ]; then
+		return $(false)
+	fi
+
+	return $(true)
+}
+
 
 eval set -- "$new_args"
 
