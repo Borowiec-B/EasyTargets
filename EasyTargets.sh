@@ -91,6 +91,28 @@ write_target_file() {
 	return 0
 }
 
+print_targets() {
+	local targets_filepath
+
+	targets_filepath="$(find_targets_file)"
+	local search_status=$?
+
+	if [ $search_status -ne 0 ]; then
+		return 1
+	fi
+
+	local targets
+	targets="$(cat "$targets_filepath")"
+	local read_status=$?
+	
+	if [ $read_status -ne 0 ]; then
+		return 2
+	fi
+
+	echo -n "$targets"
+	return 0
+}
+
 
 eval set -- "$new_args"
 
