@@ -37,7 +37,7 @@ find_target_file() {
 	filepath="$(upfind_file "$t")"
 	local search_status=$?
 
-	if [ $search_status -ne 0 ]
+	if [ $search_status -ne 0 ]; then
 		return 1
 	else
 		echo -n "$filepath"
@@ -50,7 +50,7 @@ find_targets_file() {
 	filepath="$(upfind_file "$T")"
 	local search_status=$?
 
-	if [ $search_status -ne 0 ]
+	if [ $search_status -ne 0 ]; then
 		return 1
 	else
 		echo -n "$filepath"
