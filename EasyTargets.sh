@@ -85,7 +85,7 @@ write_target_file() {
 	local write_status=$?
 
 	if [ $write_status -ne 0 ]; then
-		return 1
+		return 2
 	fi
 
 	return 0
