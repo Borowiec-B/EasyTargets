@@ -128,6 +128,21 @@ remove_whitespace_lines() {
 	sed '/^\s*$/d' <<< "$@"
 }
 
+print_targets_processed_for_display() {
+	local processed_targets;
+	processed_targets="$(print_targets)"
+	local print_status=$?
+
+	if [ $print_status -ne 0 ]; then
+		return $print_status
+	fi
+
+	processed_targets="$(remove_whitespace_lines "$processed_targets")"
+	processed_targets="$(prefix_with_line_numbers "$processed_targets")"
+
+	echo "$processed_targets"
+}
+
 
 eval set -- "$new_args"
 
