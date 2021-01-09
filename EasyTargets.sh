@@ -113,6 +113,17 @@ print_targets() {
 	return 0
 }
 
+prefix_with_line_numbers() {
+	local number_prefix="["
+	local line_number=0
+	local number_suffix="]:"
+
+	while read line; do
+		echo ""$number_prefix"$line_number"$number_suffix" "$line""
+		line_number=$((line_number + 1))
+	done <<< "$@"
+}
+
 
 eval set -- "$new_args"
 
