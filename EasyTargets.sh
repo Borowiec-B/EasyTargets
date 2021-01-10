@@ -161,6 +161,20 @@ is_valid_integer() {
 	return $(true)
 }
 
+print_nth_line() {
+	local n="$1"
+	shift
+	local text="$@"
+	local num_lines="$(wc --lines <<< "$@")"
+
+	if ! is_valid_integer "$n" || [ "$n" -lt 0 ] || [ "$n" -gt "$num_lines" ]; then
+		return 1
+	fi
+
+	head -$n <<< "$text" | tail -1
+	return 0
+}
+
 
 eval set -- "$new_args"
 
