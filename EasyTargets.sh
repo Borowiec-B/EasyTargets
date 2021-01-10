@@ -116,7 +116,7 @@ print_targets() {
 
 prefix_with_line_numbers() {
 	local number_prefix="["
-	local line_number=0
+	local line_number=1
 	local number_suffix="]:"
 
 	while read line; do
