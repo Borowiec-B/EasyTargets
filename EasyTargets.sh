@@ -145,7 +145,7 @@ print_targets_processed_for_display() {
 }
 
 is_valid_integer() {
-	local num_lines=$(wc --lines <<< "$@")
+	local num_lines="$(wc --lines <<< "$@")"
 
 	if [ $num_lines -ne 1 ]; then
 		return $(false)
@@ -154,7 +154,7 @@ is_valid_integer() {
 	local first_line="$(head --lines=1 - <<< "$@")"
 
 	# Sed prints output only if $first_line is a valid integer.
-	if [ -z "$(sed --quiet -E --expression '/^-?([1-9][0-9]*|0)$/p' <<< "$first_line")" ]; then
+	if [ -z "$(sed --quiet --expression '/^-\?([1-9][0-9]*|0)$/p' <<< "$first_line")" ]; then
 		return $(false)
 	fi
 
