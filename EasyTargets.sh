@@ -126,6 +126,25 @@ print_target_tags() {
 	sed -En '/^\[.+\]$/p' <<< "$targets_file"
 }
 
+target_exists() {
+	local all_tags="$(print_target_tags)"
+	local arg_tag="[${1}]"
+	local arg_tag_found="false"
+
+	# print_target_tags() prints line-separated results.
+	while read tag; do
+		if [ "$tag" = "$arg_tag" ]; then
+			arg_tag_found="true"
+		fi
+	done <<< "$all_tags"
+
+	if [ "$arg_tag_found" = "true" ]; then
+		return $(true)
+	else
+		return $(false)
+	fi
+}
+
 prefix_with_line_numbers() {
 	local number_prefix="["
 	local line_number=1
