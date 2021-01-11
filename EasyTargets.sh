@@ -145,6 +145,36 @@ target_exists() {
 	fi
 }
 
+print_target_content() {
+	local tags="$(print_target_tags)"
+	local arg_tag="[$1]"
+	local arg_tag_found="false"
+
+	for tag in "$tags"; do
+		if [ "$tag" = "$arg_tag" ]; then
+			arg_tag_found="true"
+		fi
+	done
+
+	if [ "$arg_tag_found" = "false" ]; then
+		return 1
+	fi
+
+	local targets_file
+	targets_file="$(print_targets_file)"
+	local print_status=$?
+
+	if [ $print_status -ne 0 ]; then
+		return $print_status
+	fi
+
+	local tag_line_number="$(grep --line-number --fixed-strings "$tag" <<< "$targets_file" | head -1 | cut --fields=1 --delimiter=:)"
+	local content_line_number=$((tag_line_number + 1))
+	local content="$(sed --quiet --expression "${content_line_number},/^\s*\[.*\]\s*$/p" <<< "$targets_file" | head -n -1)"
+
+	echo "$content"
+}
+
 prefix_with_line_numbers() {
 	local number_prefix="["
 	local line_number=1
