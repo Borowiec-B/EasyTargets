@@ -91,7 +91,7 @@ write_target_file() {
 	return 0
 }
 
-print_targets() {
+print_targets_file() {
 	local targets_filepath
 
 	targets_filepath="$(find_targets_file)"
@@ -137,7 +137,7 @@ remove_whitespace_lines() {
 
 print_targets_processed_for_display() {
 	local processed_targets;
-	processed_targets="$(print_targets)"
+	processed_targets="$(print_targets_file)"
 	local print_status=$?
 
 	if [ $print_status -ne 0 ]; then
