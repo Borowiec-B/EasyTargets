@@ -1,2 +1,2 @@
 # EasyTargets
-Language-agnostic, utility for managing and running targets. Primary goal is ease of setup and versatility. Written in sh and Python.
+Utility for managing and running targets, language-agnostic. Primary goal is ease of setup and versatility. Written in sh and Python.
