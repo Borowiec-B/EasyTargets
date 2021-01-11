@@ -114,6 +114,18 @@ print_targets_file() {
 	return 0
 }
 
+print_target_tags() {
+	local targets_file
+	targets_file="$(print_targets_file)"
+	local print_status=$?
+
+	if [ $print_status -ne 0 ]; then
+		return $print_status
+	fi
+
+	sed -En '/^\[.+\]$/p' <<< "$targets_file"
+}
+
 prefix_with_line_numbers() {
 	local number_prefix="["
 	local line_number=1
