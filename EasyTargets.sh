@@ -218,6 +218,14 @@ prefix_with_line_numbers() {
 	return 0
 }
 
+remove_line_number_prefixes() {
+	local number_prefix="["
+	local number_suffix="]: "
+
+	sed "s/^${number_prefix}[0-9]*${number_suffix}\(.*\)/\1/" <<< "$@"
+	return 0
+}
+
 remove_whitespace_lines() {
 	sed '/^\s*$/d' <<< "$@"
 
