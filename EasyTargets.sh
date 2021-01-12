@@ -19,6 +19,10 @@ if [ $getopt_status -ne 0 ]; then
 	exit 1
 fi
 
+remove_duplicate_lines() {
+	awk '!seen[$0]++' <<< "$@"
+}
+
 upfind_file() {
 	local filepath
 	filepath="$(./utilities/call_wrapper.py upfind "$1")"
