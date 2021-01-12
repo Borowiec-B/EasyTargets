@@ -202,14 +202,14 @@ print_target_content() {
 prefix_with_line_numbers() {
 	local number_prefix="["
 	local line_number=1
-	local number_suffix="]:"
+	local number_suffix="]: "
 
 	# Without this, whitespace in read lines gets reduced to single spaces.
 	preserved_IFS="$IFS"
 	IFS=""
 
 	while read line; do
-		echo ""$number_prefix"$line_number"$number_suffix" "$line""
+		echo ""$number_prefix"$line_number"$number_suffix""$line""
 		line_number=$((line_number + 1))
 	done <<< "$@"
 
