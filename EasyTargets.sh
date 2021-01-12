@@ -205,11 +205,11 @@ print_target_content() {
 	local arg_tag="[$1]"
 	local arg_tag_found="false"
 
-	for tag in "$tags"; do
+	while read tag; do
 		if [ "$tag" = "$arg_tag" ]; then
 			arg_tag_found="true"
 		fi
-	done
+	done <<< "$tags"
 
 	if [ "$arg_tag_found" = "false" ]; then
 		return 1
@@ -223,7 +223,7 @@ print_target_content() {
 		return $print_status
 	fi
 
-	local tag_line_number="$(grep --line-number --fixed-strings "$tag" <<< "$targets_file" | head -1 | cut --fields=1 --delimiter=:)"
+	local tag_line_number="$(print_nth_line 1 "$(grep --line-number --fixed-strings "$arg_tag" <<< "$targets_file")" | cut --fields=1 --delimiter=:)"
 	local content_line_number=$((tag_line_number + 1))
 	local content="$(sed --quiet "${content_line_number},/^\s*\[.*\]\s*$/p" <<< "$targets_file" | head -n -1)"
 
