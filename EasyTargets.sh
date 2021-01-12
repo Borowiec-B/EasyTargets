@@ -1,7 +1,7 @@
 #!/usr/bin/sh
 
-options="est:T:"
-longopts="execute,select,target-file:,targets-file:"
+options="et:T:"
+longopts="execute,target-file:,targets-file:"
 progname="EasyTargets"
 new_args="$(getopt --quiet --options "$options" --longoptions "$longopts" --name "$progname" -- "$@")"
 getopt_status=$?
