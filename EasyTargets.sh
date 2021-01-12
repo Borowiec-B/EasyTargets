@@ -21,6 +21,7 @@ fi
 
 remove_duplicate_lines() {
 	awk '!seen[$0]++' <<< "$@"
+	return 0
 }
 
 upfind_file() {
@@ -130,7 +131,6 @@ print_target_tags() {
 	fi
 
 	sed -En '/^\[.+\]$/p' <<< "$targets_file"
-
 	return 0
 }
 
@@ -145,7 +145,6 @@ print_unique_target_names() {
 
 	targets="$(sed 's/^\[\(.*\)\]$/\1/' <<< "$tags")"
 	echo "$(remove_duplicate_lines "$targets")"
-
 	return 0
 }
 
@@ -196,6 +195,7 @@ print_target_content() {
 	local content="$(sed --quiet --expression "${content_line_number},/^\s*\[.*\]\s*$/p" <<< "$targets_file" | head -n -1)"
 
 	echo "$content"
+	return 0
 }
 
 prefix_with_line_numbers() {
