@@ -99,6 +99,38 @@ write_target_file() {
 	return 0
 }
 
+is_valid_integer() {
+	local lines_in_input="$(wc --lines <<< "$@")"
+
+	if [ $lines_in_input -ne 1 ]; then
+		return $(false)
+	fi
+
+	local first_line="$(head --lines=1 - <<< "$@")"
+
+	# Sed prints output only if $first_line is a valid integer.
+	if [ -z "$(sed --quiet -E '/^-?([1-9][0-9]*|0)$/p' <<< "$first_line")" ]; then
+		return $(false)
+	fi
+
+	return $(true)
+}
+
+print_nth_line() {
+	local n="$1"
+	shift
+	local text="$@"
+	local num_lines="$(wc --lines <<< "$@")"
+
+	if ! is_valid_integer "$n" || [ "$n" -lt 0 ] || [ "$n" -gt "$num_lines" ]; then
+		return 1
+	fi
+
+	head -$n <<< "$text" | tail -1
+	return 0
+}
+
+
 print_targets_file() {
 	local targets_filepath
 
@@ -229,37 +261,6 @@ remove_line_number_prefixes() {
 remove_whitespace_lines() {
 	sed '/^\s*$/d' <<< "$@"
 
-	return 0
-}
-
-is_valid_integer() {
-	local num_lines="$(wc --lines <<< "$@")"
-
-	if [ $num_lines -ne 1 ]; then
-		return $(false)
-	fi
-
-	local first_line="$(head --lines=1 - <<< "$@")"
-
-	# Sed prints output only if $first_line is a valid integer.
-	if [ -z "$(sed --quiet -E '/^-?([1-9][0-9]*|0)$/p' <<< "$first_line")" ]; then
-		return $(false)
-	fi
-
-	return $(true)
-}
-
-print_nth_line() {
-	local n="$1"
-	shift
-	local text="$@"
-	local num_lines="$(wc --lines <<< "$@")"
-
-	if ! is_valid_integer "$n" || [ "$n" -lt 0 ] || [ "$n" -gt "$num_lines" ]; then
-		return 1
-	fi
-
-	head -$n <<< "$text" | tail -1
 	return 0
 }
 
