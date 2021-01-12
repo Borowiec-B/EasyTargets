@@ -134,6 +134,21 @@ print_target_tags() {
 	return 0
 }
 
+print_unique_target_names() {
+	local tags targets=""
+	tags="$(print_target_tags)"
+	local print_status=$?
+
+	if [ $print_status -ne 0 ]; then
+		return $print_status
+	fi
+
+	targets="$(sed 's/^\[\(.*\)\]$/\1/' <<< "$tags")"
+	echo "$(remove_duplicate_lines "$targets")"
+
+	return 0
+}
+
 target_exists() {
 	local all_tags="$(print_target_tags)"
 	local arg_tag="[${1}]"
