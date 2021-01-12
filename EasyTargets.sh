@@ -30,10 +30,10 @@ upfind_file() {
 
 	if [ $search_status -ne 0 ]; then
 		return 1
-	else
-		echo -n "$filepath"
-		return 0
 	fi
+
+	echo -n "$filepath"
+	return 0
 }
 
 find_target_file() {
@@ -43,10 +43,10 @@ find_target_file() {
 
 	if [ $search_status -ne 0 ]; then
 		return 1
-	else
-		echo -n "$filepath"
-		return 0
 	fi
+
+	echo -n "$filepath"
+	return 0
 }
 
 find_targets_file() {
@@ -56,10 +56,10 @@ find_targets_file() {
 
 	if [ $search_status -ne 0 ]; then
 		return 1
-	else
-		echo -n "$filepath"
-		return 0
 	fi
+
+	echo -n "$filepath"
+	return 0
 }
 
 execute_target_file() {
@@ -70,10 +70,12 @@ execute_target_file() {
 	if [ $search_status -ne 0 ]; then
 		echo "Error: Target file \"$t\" was not found."
 		exit 1
-	else
-		cd "$(dirname "$target_filepath")"
-		"$target_filepath"
 	fi
+
+	cd "$(dirname "$target_filepath")"
+	"$target_filepath"
+	
+	exit 0
 }
 
 write_target_file() {
@@ -128,6 +130,8 @@ print_target_tags() {
 	fi
 
 	sed -En '/^\[.+\]$/p' <<< "$targets_file"
+
+	return 0
 }
 
 target_exists() {
@@ -194,10 +198,14 @@ prefix_with_line_numbers() {
 	done <<< "$@"
 
 	IFS="$preserved_IFS"
+
+	return 0
 }
 
 remove_whitespace_lines() {
 	sed '/^\s*$/d' <<< "$@"
+
+	return 0
 }
 
 is_valid_integer() {
