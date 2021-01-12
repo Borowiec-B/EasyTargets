@@ -131,7 +131,7 @@ print_target_tags() {
 		return $print_status
 	fi
 
-	sed -En '/^\[.+\]$/p' <<< "$targets_file"
+	sed -E --quiet '/^\[.+\]$/p' <<< "$targets_file"
 	return 0
 }
 
@@ -193,7 +193,7 @@ print_target_content() {
 
 	local tag_line_number="$(grep --line-number --fixed-strings "$tag" <<< "$targets_file" | head -1 | cut --fields=1 --delimiter=:)"
 	local content_line_number=$((tag_line_number + 1))
-	local content="$(sed --quiet --expression "${content_line_number},/^\s*\[.*\]\s*$/p" <<< "$targets_file" | head -n -1)"
+	local content="$(sed --quiet "${content_line_number},/^\s*\[.*\]\s*$/p" <<< "$targets_file" | head -n -1)"
 
 	echo "$content"
 	return 0
@@ -234,7 +234,7 @@ is_valid_integer() {
 	local first_line="$(head --lines=1 - <<< "$@")"
 
 	# Sed prints output only if $first_line is a valid integer.
-	if [ -z "$(sed --quiet --expression '/^-\?([1-9][0-9]*|0)$/p' <<< "$first_line")" ]; then
+	if [ -z "$(sed --quiet -E '/^-?([1-9][0-9]*|0)$/p' <<< "$first_line")" ]; then
 		return $(false)
 	fi
 
