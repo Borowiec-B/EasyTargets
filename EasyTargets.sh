@@ -1,13 +1,14 @@
 #!/usr/bin/sh
 
-options="et:T:"
-longopts="execute,target-file:,targets-file:"
+options="elt:T:"
+longopts="execute,list,target-file:,targets-file:"
 progname="EasyTargets"
 new_args="$(getopt --quiet --options "$options" --longoptions "$longopts" --name "$progname" -- "$@")"
 getopt_status=$?
 usage="Usage: (to be written)"
 
 e="false"
+l="false"
 t=""
 default_t=".target.sh"
 T=""
@@ -263,6 +264,10 @@ while true; do
 			e="true"
 			shift
 			;;
+		"-l"|"--list")
+			l="true"
+			shift
+			;;
 		"-t"|"--target-file")
 			t="$2"
 			shift 2
@@ -288,6 +293,10 @@ fi
 
 if [ -z "$T" ]; then
 	T="$default_T"
+fi
+
+if [ "$l" = "true" ]; then
+	print_unique_target_names
 fi
 
 if [ "$e" = "true" ]; then
