@@ -224,8 +224,11 @@ print_target_content() {
 	fi
 
 	local tag_line_number="$(print_nth_line 1 "$(grep --line-number --fixed-strings "$arg_tag" <<< "$targets_file")" | cut --fields=1 --delimiter=:)"
-	local content_line_number=$((tag_line_number + 1))
-	local content="$(sed --quiet "${content_line_number},/^\s*\[.*\]\s*$/p" <<< "$targets_file" | head -n -1)"
+	local content_line_number="$((tag_line_number + 1))"
+
+	# Following sed call prints lines below tag given to this command, all the way to either end of file or line above next tag.
+	local tag_regex='^\s*\[.*\]\s*$'
+	local content="$(sed --quiet "${content_line_number},/${tag_regex}/ { /${tag_regex}/q ; p }" <<< "$targets_file")"
 
 	echo "$content"
 	return 0
