@@ -1,7 +1,7 @@
 #!/usr/bin/sh
 
-options="elt:T:"
-longopts="execute,list,target-file:,targets-file:"
+options="elst:T:"
+longopts="execute,list,select,target-file:,targets-file:"
 progname="EasyTargets"
 new_args="$(getopt --quiet --options "$options" --longoptions "$longopts" --name "$progname" -- "$@")"
 getopt_status=$?
@@ -9,6 +9,7 @@ usage="Usage: (to be written)"
 
 e="false"
 l="false"
+s="false"
 t=""
 default_t=".target.sh"
 T=""
@@ -267,6 +268,55 @@ remove_whitespace_lines() {
 	return 0
 }
 
+select_target() {
+	local targets_prompt_separator="---"
+	local prompt="Select target: "
+	local invalid_input_message="Invalid input. Enter one of the shown numbers."
+
+	local target_names
+	target_names="$(print_unique_target_names)"
+	local print_status=$?
+
+	if [ $print_status -eq 1 ]; then
+		echo "Error: Couldn't find targets file \"$T\"."
+	elif [ $print_status -eq 2 ]; then
+		echo "Error: Found, but couldn't read targets file \"$T\"."
+	fi
+
+	numbered_target_names="$(prefix_with_line_numbers "$target_names")"
+
+	echo "$numbered_target_names"
+	echo "$targets_prompt_separator"
+	echo -n "$prompt"
+
+	local selected_number
+	local min=1
+	local max="$(wc --lines <<< "$numbered_target_names")"
+
+	read selected_number
+
+	while ! is_valid_integer "$selected_number" || [ "$selected_number" -lt "$min" ] || [ "$selected_number" -gt "$max" ]; do
+		echo "$invalid_input_message"
+		echo -n "$prompt"
+		read selected_number
+	done
+
+	selected_target_name="$(print_nth_line "$selected_number" "$target_names")"
+
+	write_target_file "$(print_target_content "$selected_target_name")"
+	local target_write_status=$?
+
+	if [ $target_write_status -eq 1 ]; then
+		echo "Error: Failed to find target file \"$t\"."
+		exit 1
+	elif [ $target_write_status -eq 2 ]; then
+		echo "Error: Found, but failed to write target file \"$t\"."
+		exit 2
+	fi
+
+	return 0
+}
+
 
 eval set -- "$new_args"
 
@@ -278,6 +328,10 @@ while true; do
 			;;
 		"-l"|"--list")
 			l="true"
+			shift
+			;;
+		"-s"|"--select")
+			s="true"
 			shift
 			;;
 		"-t"|"--target-file")
@@ -309,6 +363,10 @@ fi
 
 if [ "$l" = "true" ]; then
 	print_unique_target_names
+fi
+
+if [ "$s" = "true" ]; then
+	select_target
 fi
 
 if [ "$e" = "true" ]; then
