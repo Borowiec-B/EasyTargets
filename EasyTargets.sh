@@ -92,6 +92,39 @@ execute_target_file() {
 	exit 0
 }
 
+create_target_file_in_targets_dir() {
+	local targets_filepath
+	targets_filepath="$(find_targets_file)"
+	local search_status=$?
+
+	if [ -z "$t" ]; then
+		return 4
+	fi
+
+	if [ $search_status -ne 0 ]; then
+		return 1
+	fi
+
+	local targets_dir="$(dirname "$targets_filepath")"
+	local target_filepath="$targets_dir"/"$t"
+
+	touch "$target_filepath"
+	local touch_status=$?
+
+	if [ $touch_status -ne 0 ]; then
+		return 2
+	fi
+
+	chmod u+x "$target_filepath"
+	local chmod_status=$?
+
+	if [ $chmod_status -ne 0 ]; then
+		return 3
+	fi
+
+	echo "$target_filepath"
+}
+
 write_target_file() {
 	local target_filepath
 	target_filepath="$(find_target_file)"
