@@ -131,7 +131,12 @@ write_target_file() {
 	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
-		return 1
+		target_filepath="$(create_target_file_in_targets_dir)"
+		local create_status=$?
+
+		if [ $create_status -ne 0 ]; then
+			return 1
+		fi
 	fi
 
 	echo "$@" > "$target_filepath"
