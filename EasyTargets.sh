@@ -250,7 +250,18 @@ target_exists() {
 }
 
 print_target_content() {
-	local tags="$(print_target_tags)"
+	local tags
+	tags="$(print_target_tags)"
+	print_status=$?
+
+	if [ $print_status -eq 1 ]; then
+		echo "Error: Failed to find target file \"$t\"."
+		exit 1
+	elif [ $print_status -eq 2 ]; then
+		echo "Error: Found, but failed to read target file \"$t\."
+		exit 2
+	fi
+
 	local arg_tag="[$1]"
 	local arg_tag_found="false"
 
