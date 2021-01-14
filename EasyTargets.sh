@@ -192,8 +192,7 @@ print_targets_file() {
 	fi
 
 	local targets
-	# Suppress stderr, EasyTargets should only print its own error messages.
-	targets="$(cat "$targets_filepath" 2>/dev/null)"
+	targets="$(cat "$targets_filepath")"
 	local read_status=$?
 	
 	if [ $read_status -ne 0 ]; then
