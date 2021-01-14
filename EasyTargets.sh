@@ -98,7 +98,7 @@ create_target_file_in_targets_dir() {
 	local search_status=$?
 
 	if [ -z "$t" ]; then
-		return 4
+		return 10
 	fi
 
 	if [ $search_status -ne 0 ]; then
