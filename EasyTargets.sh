@@ -27,16 +27,27 @@ remove_duplicate_lines() {
 }
 
 upfind_file() {
-	local filepath
-	filepath="$(./utilities/call_wrapper.py upfind "$1")"
-	local search_status=$?
-
-	if [ $search_status -ne 0 ]; then
-		return 1
+	local filename="$1"
+	# A little edge case, without this "/" argument prints cwd.
+	if [ "$filename" = "/" ]; then
+		echo "/"
+		return 0
 	fi
 
-	echo -n "$filepath"
-	return 0
+	local current_examined_dir="$(pwd)"
+
+	while true; do
+		if [ -e "$current_examined_dir"/"$filename" ]; then
+			realpath --no-symlinks ""$current_examined_dir"/"$filename""
+			return 0
+		elif [ ! "$current_examined_dir" = "/" ]; then
+			current_examined_dir="$(dirname "$current_examined_dir")"
+		else
+			break
+		fi
+	done
+	
+	return 1
 }
 
 find_target_file() {
