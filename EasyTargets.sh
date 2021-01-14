@@ -357,11 +357,11 @@ select_target() {
 	local target_write_status=$?
 
 	if [ $target_write_status -eq 1 ]; then
-		echo "Error: Failed to find, and failed to create target file \"$t\"."
-		exit 1
+		echo "Error: Failed to find, then failed to create missing target file \"$t\"."
+		exit 3
 	elif [ $target_write_status -eq 2 ]; then
 		echo "Error: Failed to write to target file \"$t\"."
-		exit 2
+		exit 4
 	fi
 
 	return 0
