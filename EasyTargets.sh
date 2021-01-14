@@ -327,8 +327,10 @@ select_target() {
 
 	if [ $print_status -eq 1 ]; then
 		echo "Error: Couldn't find targets file \"$T\"."
+		exit 1
 	elif [ $print_status -eq 2 ]; then
 		echo "Error: Found, but couldn't read targets file \"$T\"."
+		exit 2
 	fi
 
 	numbered_target_names="$(prefix_with_line_numbers "$target_names")"
