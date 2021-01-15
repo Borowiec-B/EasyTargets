@@ -1,5 +1,9 @@
 #!/usr/bin/sh
 
+#  To do:
+#    - Use a global errno instead of convoluted status returning.
+#
+
 options="elst:T:"
 longopts="execute,list,select,target-file:,targets-file:"
 progname="EasyTargets"
