@@ -15,7 +15,7 @@ e="false"
 l="false"
 s="false"
 t=""
-default_t=".target.sh"
+default_t=".target"
 T=""
 default_T=".targets"
 
