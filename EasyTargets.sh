@@ -4,8 +4,8 @@
 #    - Use a global errno instead of convoluted status returning.
 #
 
-options="elst:T:"
-longopts="execute,list,select,target-file:,targets-file:"
+options="elm:st:T:"
+longopts="execute,list,menu:,select,target-file:,targets-file:"
 progname="EasyTargets"
 new_args="$(getopt --quiet --options "$options" --longoptions "$longopts" --name "$progname" -- "$@")"
 getopt_status=$?
@@ -13,6 +13,7 @@ usage="Usage: (to be written)"
 
 e="false"
 l="false"
+m=""
 s="false"
 t=""
 default_t=".target"
@@ -382,6 +383,47 @@ select_target() {
 	return 0
 }
 
+select_target_by_menu() {
+	if [ -z "$m" ]; then
+		echo "Error: Menu not supplied to select_target_by_menu()."
+		exit 10
+	fi
+
+	local target_names
+	target_names="$(print_unique_target_names)"
+	local print_status=$?
+
+	if [ $print_status -eq 1 ]; then
+		echo "Error: Couldn't find targets file \"$T\"."
+		exit 1
+	elif [ $print_status -eq 2 ]; then
+		echo "Error: Found, but couldn't read targets file \"$T\"."
+		exit 2
+	fi
+
+	local selected_target_name;
+	selected_target_name="$($m <<< "$target_names")"
+	local menu_status=$?
+
+	if [ $menu_status -ne 0 ] || [ -z "$selected_target_name" ] || ! target_exists "$selected_target_name" ; then
+		echo "Failed to get target name through menu: \"$m\"."
+		exit 5
+	fi
+
+	write_target_file "$(print_target_content "$selected_target_name")"
+	local write_status=$?
+
+	if [ $write_status -eq 1 ]; then
+		echo "Error: Failed to find, then failed to create missing target file \"$t\"."
+		exit 3
+	elif [ $write_status -eq 2 ]; then
+		echo "Error: Failed to write to target file \"$t\"."
+		exit 4
+	fi
+
+	return 0
+}
+
 
 eval set -- "$new_args"
 
@@ -394,6 +436,10 @@ while true; do
 		"-l"|"--list")
 			l="true"
 			shift
+			;;
+		"-m"|"--menu")
+			m="$2"
+			shift 2
 			;;
 		"-s"|"--select")
 			s="true"
@@ -431,7 +477,11 @@ if [ "$l" = "true" ]; then
 fi
 
 if [ "$s" = "true" ]; then
-	select_target
+	if [ ! -z "$m" ]; then
+		select_target_by_menu
+	else
+		select_target
+	fi
 fi
 
 if [ "$e" = "true" ]; then
