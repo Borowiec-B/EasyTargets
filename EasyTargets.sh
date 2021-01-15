@@ -4,7 +4,7 @@
 #    - Use a global errno instead of convoluted status returning.
 #
 
-options="elm:st:T:"
+options="ef:F:lm:s"
 longopts="execute,list,menu:,select,target-file:,targets-file:"
 progname="EasyTargets"
 new_args="$(getopt --quiet --options "$options" --longoptions "$longopts" --name "$progname" -- "$@")"
@@ -15,10 +15,10 @@ e="false"
 l="false"
 m=""
 s="false"
-t=""
-default_t=".target"
-T=""
-default_T=".targets"
+f=""
+default_f=".target"
+F=""
+default_F=".targets"
 
 if [ $getopt_status -ne 0 ]; then
 	echo -e "Invalid options.\n"
@@ -57,7 +57,7 @@ upfind_file() {
 
 find_target_file() {
 	local filepath
-	filepath="$(upfind_file "$t")"
+	filepath="$(upfind_file "$f")"
 	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
@@ -70,7 +70,7 @@ find_target_file() {
 
 find_targets_file() {
 	local filepath
-	filepath="$(upfind_file "$T")"
+	filepath="$(upfind_file "$F")"
 	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
@@ -87,7 +87,7 @@ execute_target_file() {
 	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
-		echo "Error: Target file \"$t\" was not found."
+		echo "Error: Target file \"$f\" was not found."
 		exit 1
 	fi
 
@@ -102,7 +102,7 @@ create_target_file_in_targets_dir() {
 	targets_filepath="$(find_targets_file)"
 	local search_status=$?
 
-	if [ -z "$t" ]; then
+	if [ -z "$f" ]; then
 		return 10
 	fi
 
@@ -111,7 +111,7 @@ create_target_file_in_targets_dir() {
 	fi
 
 	local targets_dir="$(dirname "$targets_filepath")"
-	local target_filepath="$targets_dir"/"$t"
+	local target_filepath="$targets_dir"/"$f"
 
 	touch "$target_filepath"
 	local touch_status=$?
@@ -260,10 +260,10 @@ print_target_content() {
 	print_status=$?
 
 	if [ $print_status -eq 1 ]; then
-		echo "Error: Failed to find target file \"$t\"."
+		echo "Error: Failed to find target file \"$f\"."
 		exit 1
 	elif [ $print_status -eq 2 ]; then
-		echo "Error: Found, but failed to read target file \"$t\."
+		echo "Error: Found, but failed to read target file \"$f\."
 		exit 2
 	fi
 
@@ -342,10 +342,10 @@ select_target() {
 	local print_status=$?
 
 	if [ $print_status -eq 1 ]; then
-		echo "Error: Couldn't find targets file \"$T\"."
+		echo "Error: Couldn't find targets file \"$F\"."
 		exit 1
 	elif [ $print_status -eq 2 ]; then
-		echo "Error: Found, but couldn't read targets file \"$T\"."
+		echo "Error: Found, but couldn't read targets file \"$F\"."
 		exit 2
 	fi
 
@@ -373,10 +373,10 @@ select_target() {
 	local target_write_status=$?
 
 	if [ $target_write_status -eq 1 ]; then
-		echo "Error: Failed to find, then failed to create missing target file \"$t\"."
+		echo "Error: Failed to find, then failed to create missing target file \"$f\"."
 		exit 3
 	elif [ $target_write_status -eq 2 ]; then
-		echo "Error: Failed to write to target file \"$t\"."
+		echo "Error: Failed to write to target file \"$f\"."
 		exit 4
 	fi
 
@@ -394,10 +394,10 @@ select_target_by_menu() {
 	local print_status=$?
 
 	if [ $print_status -eq 1 ]; then
-		echo "Error: Couldn't find targets file \"$T\"."
+		echo "Error: Couldn't find targets file \"$F\"."
 		exit 1
 	elif [ $print_status -eq 2 ]; then
-		echo "Error: Found, but couldn't read targets file \"$T\"."
+		echo "Error: Found, but couldn't read targets file \"$F\"."
 		exit 2
 	fi
 
@@ -414,10 +414,10 @@ select_target_by_menu() {
 	local write_status=$?
 
 	if [ $write_status -eq 1 ]; then
-		echo "Error: Failed to find, then failed to create missing target file \"$t\"."
+		echo "Error: Failed to find, then failed to create missing target file \"$f\"."
 		exit 3
 	elif [ $write_status -eq 2 ]; then
-		echo "Error: Failed to write to target file \"$t\"."
+		echo "Error: Failed to write to target file \"$f\"."
 		exit 4
 	fi
 
@@ -433,6 +433,14 @@ while true; do
 			e="true"
 			shift
 			;;
+		"-f"|"--target-file")
+			f="$2"
+			shift 2
+			;;
+		"-F"|"--targets-file")
+			F="$2"
+			shift 2
+			;;
 		"-l"|"--list")
 			l="true"
 			shift
@@ -445,14 +453,6 @@ while true; do
 			s="true"
 			shift
 			;;
-		"-t"|"--target-file")
-			t="$2"
-			shift 2
-			;;
-		"-T"|"--targets-file")
-			T="$2"
-			shift 2
-			;;
 		--)
 			shift
 			break
@@ -464,12 +464,12 @@ while true; do
 	esac
 done
 
-if [ -z "$t" ]; then
-	t="$default_t"
+if [ -z "$f" ]; then
+	f="$default_f"
 fi
 
-if [ -z "$T" ]; then
-	T="$default_T"
+if [ -z "$F" ]; then
+	F="$default_F"
 fi
 
 if [ "$l" = "true" ]; then
