@@ -37,7 +37,7 @@ remove_duplicate_lines() {
 	return 0
 }
 
-# upfind_file(): Check if file $examined_directory/$1 exists.
+# upfind_file(): Check if file $examined_directory/$1 exists, print the resulting absolute path on success.
 #				 Examined directory is at first cwd, then enters a loop of going up and checking until / is hit.
 #   Args:
 #     $1 - filename or filepath.
@@ -132,7 +132,7 @@ execute_target_file() {
 	exit 0
 }
 
-# create_target_file_in_targets_dir(): Find targets file, create $f in its directory, and set permissions.
+# create_target_file_in_targets_dir(): Find targets file, create $f in its directory, and set permissions. Print resulting absolute filepath.
 #
 #   Errors:
 #     $EMISSINGARG - $f is unset.
