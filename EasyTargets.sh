@@ -43,7 +43,7 @@ upfind_file() {
 
 	while true; do
 		if [ -e "$current_examined_dir"/"$filename" ]; then
-			realpath --no-symlinks ""$current_examined_dir"/"$filename""
+			realpath --no-symlinks "$current_examined_dir"/"$filename"
 			return 0
 		elif [ ! "$current_examined_dir" = "/" ]; then
 			current_examined_dir="$(dirname "$current_examined_dir")"
