@@ -128,6 +128,7 @@ create_target_file_in_targets_dir() {
 	fi
 
 	echo "$target_filepath"
+	return 0
 }
 
 write_target_file() {
