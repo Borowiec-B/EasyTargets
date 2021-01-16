@@ -68,6 +68,11 @@ upfind_file() {
 	return $ENOTFOUND
 }
 
+# find_target_file(): Call upfind_file() with $f, which is either argument given to -f/--target-file, or $default_f.
+#
+#   Errors:
+#     $ENOTFOUND - $f was not found.
+#
 find_target_file() {
 	local filepath
 	filepath="$(upfind_file "$f")"
