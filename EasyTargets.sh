@@ -231,7 +231,7 @@ print_nth_line() {
 	local text="$@"
 	local num_lines="$(wc --lines <<< "$@")"
 
-	if ! is_valid_integer "$n" || [ "$n" -lt 0 ]; then
+	if ! is_valid_integer "$n" || [ "$n" -le 0 ]; then
 		return $EINVALIDARG
 	fi
 
