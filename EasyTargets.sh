@@ -108,7 +108,7 @@ find_targets_file() {
 # execute_target_file(): Find target file, cd into its directory and execute it.
 #
 #   Errors:
-#     $ENOTFOUND - $f was not found.
+#     $ENOTFOUND - target file was not found.
 #     $ENOPERMS  - Found file's permissions don't allow executing.
 #
 execute_target_file() {
