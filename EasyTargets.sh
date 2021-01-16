@@ -290,7 +290,9 @@ print_target_tags() {
 		return $print_status
 	fi
 
-	sed -E --quiet '/^\[.+\]$/p' <<< "$targets_file"
+	unstripped_tags="$(sed -E --quiet '/^\[.+\]\s*$/ p' <<< "$targets_file")"
+	stripped_tags="$(sed --quiet 's/^\(.*\]\)\s*/\1/ p' <<< "$unstripped_tags")"
+	echo "$stripped_tags"
 	return 0
 }
 
