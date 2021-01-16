@@ -159,6 +159,7 @@ create_target_file_in_targets_dir() {
 	local chmod_status=$?
 
 	if [ $chmod_status -ne 0 ]; then
+		rm "$target_filepath"
 		return $ENOTCREATED
 	fi
 
