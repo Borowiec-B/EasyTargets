@@ -253,6 +253,12 @@ print_nth_line() {
 }
 
 
+# print_targets_file(): Try to find the targets file and print its contents.
+#
+#   Errors:
+#     $ENOTFOUND - Targets file was not found.
+#     $ERDERROR  - Targets file was found, but couldn't be read.
+#
 print_targets_file() {
 	local targets_filepath
 
