@@ -36,6 +36,14 @@ remove_duplicate_lines() {
 	return 0
 }
 
+# upfind_file(): Check if file $examined_directory/$1 exists.
+#				 Examined directory is at first cwd, then enters a loop of going up and checking until / is hit.
+#   Args:
+#     $1 - filename or filepath
+#
+#   Errors:
+#     $ENOTFOUND - Argument was not found
+#
 upfind_file() {
 	local filename="$1"
 	# A little edge case, without this "/" argument prints cwd.
