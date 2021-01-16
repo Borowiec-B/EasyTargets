@@ -1,9 +1,5 @@
 #!/usr/bin/sh
 
-#  To do:
-#    - Use a global errno instead of convoluted status returning.
-#
-
 options="ef:F:lm:s"
 longopts="execute,list,menu:,select,target-file:,targets-file:"
 progname="EasyTargets"
@@ -20,10 +16,19 @@ default_f=".target"
 F=""
 default_F=".targets"
 
+declare -ir ENOTFOUND=1
+declare -ir EMISSINGARG=2
+declare -ir EINVALIDARG=3
+declare -ir ENOTCREATED=4
+declare -ir ERDERROR=5
+declare -ir EWRERROR=6
+declare -ir EOTHER=255
+
+
 if [ $getopt_status -ne 0 ]; then
 	echo -e "Invalid options.\n"
 	echo "$usage"
-	exit 1
+	exit $EINVALIDARG
 fi
 
 remove_duplicate_lines() {
@@ -52,7 +57,7 @@ upfind_file() {
 		fi
 	done
 	
-	return 1
+	return $ENOTFOUND
 }
 
 find_target_file() {
@@ -61,7 +66,7 @@ find_target_file() {
 	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
-		return 1
+		return $search_status
 	fi
 
 	echo -n "$filepath"
@@ -74,7 +79,7 @@ find_targets_file() {
 	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
-		return 1
+		return $search_status
 	fi
 
 	echo -n "$filepath"
@@ -88,7 +93,7 @@ execute_target_file() {
 
 	if [ $search_status -ne 0 ]; then
 		echo "Error: Target file \"$f\" was not found."
-		exit 1
+		exit $search_status
 	fi
 
 	cd "$(dirname "$target_filepath")"
@@ -103,11 +108,11 @@ create_target_file_in_targets_dir() {
 	local search_status=$?
 
 	if [ -z "$f" ]; then
-		return 10
+		return $EMISSINGARG
 	fi
 
 	if [ $search_status -ne 0 ]; then
-		return 1
+		return $search_status
 	fi
 
 	local targets_dir="$(dirname "$targets_filepath")"
@@ -117,14 +122,14 @@ create_target_file_in_targets_dir() {
 	local touch_status=$?
 
 	if [ $touch_status -ne 0 ]; then
-		return 2
+		return $ENOTCREATED
 	fi
 
 	chmod u+x "$target_filepath"
 	local chmod_status=$?
 
 	if [ $chmod_status -ne 0 ]; then
-		return 3
+		return $ENOTCREATED
 	fi
 
 	echo "$target_filepath"
@@ -141,7 +146,7 @@ write_target_file() {
 		local create_status=$?
 
 		if [ $create_status -ne 0 ]; then
-			return 1
+			return $create_status
 		fi
 	fi
 
@@ -149,7 +154,7 @@ write_target_file() {
 	local write_status=$?
 
 	if [ $write_status -ne 0 ]; then
-		return 2
+		return $EWRERROR
 	fi
 
 	return 0
@@ -179,7 +184,7 @@ print_nth_line() {
 	local num_lines="$(wc --lines <<< "$@")"
 
 	if ! is_valid_integer "$n" || [ "$n" -lt 0 ] || [ "$n" -gt "$num_lines" ]; then
-		return 1
+		return $ENOTFOUND
 	fi
 
 	head -$n <<< "$text" | tail -1
@@ -194,7 +199,7 @@ print_targets_file() {
 	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
-		return 1
+		return $search_status
 	fi
 
 	local targets
@@ -202,7 +207,7 @@ print_targets_file() {
 	local read_status=$?
 	
 	if [ $read_status -ne 0 ]; then
-		return 2
+		return $ERDERROR
 	fi
 
 	echo -n "$targets"
@@ -267,12 +272,12 @@ print_target_content() {
 	tags="$(print_target_tags)"
 	print_status=$?
 
-	if [ $print_status -eq 1 ]; then
+	if [ $print_status -eq $ENOTFOUND ]; then
 		echo "Error: Failed to find target file \"$f\"."
-		exit 1
-	elif [ $print_status -eq 2 ]; then
+		exit $ENOTFOUND
+	elif [ $print_status -eq $ERDERROR ]; then
 		echo "Error: Found, but failed to read target file \"$f\."
-		exit 2
+		exit $ERDERROR
 	fi
 
 	local arg_tag="[$1]"
@@ -285,7 +290,7 @@ print_target_content() {
 	done <<< "$tags"
 
 	if [ "$arg_tag_found" = "false" ]; then
-		return 1
+		return $ENOTFOUND
 	fi
 
 	local targets_file
@@ -349,12 +354,12 @@ select_target() {
 	target_names="$(print_unique_target_names)"
 	local print_status=$?
 
-	if [ $print_status -eq 1 ]; then
+	if [ $print_status -eq $ENOTFOUND ]; then
 		echo "Error: Couldn't find targets file \"$F\"."
-		exit 1
-	elif [ $print_status -eq 2 ]; then
+		exit $ENOTFOUND
+	elif [ $print_status -eq $ERDERROR ]; then
 		echo "Error: Found, but couldn't read targets file \"$F\"."
-		exit 2
+		exit $ERDERROR
 	fi
 
 	numbered_target_names="$(prefix_with_line_numbers "$target_names")"
@@ -380,12 +385,12 @@ select_target() {
 	write_target_file "$(print_target_content "$selected_target_name")"
 	local target_write_status=$?
 
-	if [ $target_write_status -eq 1 ]; then
+	if [ $target_write_status -eq $ENOTCREATED ]; then
 		echo "Error: Failed to find, then failed to create missing target file \"$f\"."
-		exit 3
-	elif [ $target_write_status -eq 2 ]; then
+		exit $ENOTCREATED
+	elif [ $target_write_status -eq $EWRERROR ]; then
 		echo "Error: Failed to write to target file \"$f\"."
-		exit 4
+		exit $EWRERROR
 	fi
 
 	return 0
@@ -394,19 +399,19 @@ select_target() {
 select_target_by_menu() {
 	if [ -z "$m" ]; then
 		echo "Error: Menu not supplied to select_target_by_menu()."
-		exit 10
+		exit $EMISSINGARG
 	fi
 
 	local target_names
 	target_names="$(print_unique_target_names)"
 	local print_status=$?
 
-	if [ $print_status -eq 1 ]; then
+	if [ $print_status -eq $ENOTFOUND ]; then
 		echo "Error: Couldn't find targets file \"$F\"."
-		exit 1
-	elif [ $print_status -eq 2 ]; then
+		exit $ENOTFOUND
+	elif [ $print_status -eq $ERDERROR ]; then
 		echo "Error: Found, but couldn't read targets file \"$F\"."
-		exit 2
+		exit $ERDERROR
 	fi
 
 	local selected_target_name;
@@ -415,18 +420,18 @@ select_target_by_menu() {
 
 	if [ $menu_status -ne 0 ] || [ -z "$selected_target_name" ] || ! target_exists "$selected_target_name" ; then
 		echo "Failed to get target name through menu: \"$m\"."
-		exit 5
+		exit $EOTHER
 	fi
 
 	write_target_file "$(print_target_content "$selected_target_name")"
 	local write_status=$?
 
-	if [ $write_status -eq 1 ]; then
+	if [ $write_status -eq $ENOTCREATED ]; then
 		echo "Error: Failed to find, then failed to create missing target file \"$f\"."
-		exit 3
-	elif [ $write_status -eq 2 ]; then
+		exit $ENOTCREATED
+	elif [ $write_status -eq $EWRERROR ]; then
 		echo "Error: Failed to write to target file \"$f\"."
-		exit 4
+		exit $EWRERROR
 	fi
 
 	return 0
@@ -466,8 +471,8 @@ while true; do
 			break
 			;;
 		*)
-			echo "Unrecognized option "$1", exiting."
-			break
+			echo "Error: Unimplemented option "$1"."
+			exit $EINVALIDARG
 			;;
 	esac
 done
