@@ -40,10 +40,10 @@ remove_duplicate_lines() {
 # upfind_file(): Check if file $examined_directory/$1 exists.
 #				 Examined directory is at first cwd, then enters a loop of going up and checking until / is hit.
 #   Args:
-#     $1 - filename or filepath
+#     $1 - filename or filepath.
 #
 #   Errors:
-#     $ENOTFOUND - Argument was not found
+#     $ENOTFOUND - Argument was not found.
 #
 upfind_file() {
 	local filename="$1"
@@ -108,7 +108,7 @@ find_targets_file() {
 # execute_target_file(): Find target file, cd into its directory and execute it.
 #
 #   Errors:
-#     $ENOTFOUND - target file was not found.
+#     $ENOTFOUND - Target file was not found.
 #     $ENOPERMS  - Found file's permissions don't allow executing.
 #
 execute_target_file() {
@@ -136,8 +136,8 @@ execute_target_file() {
 #
 #   Errors:
 #     $EMISSINGARG - $f is unset.
-#     $ENOTCREATED - target file could not be created.
-#     $ENOTFOUND   - targets file was not found.
+#     $ENOTCREATED - Target file could not be created.
+#     $ENOTFOUND   - Targets file was not found.
 #
 create_target_file_in_targets_dir() {
 	if [ -z "$f" ]; then
