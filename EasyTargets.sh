@@ -22,6 +22,7 @@ declare -ir EINVALIDARG=3
 declare -ir ENOTCREATED=4
 declare -ir ERDERROR=5
 declare -ir EWRERROR=6
+declare -ir ENOPERMS=7
 declare -ir EOTHER=255
 
 
@@ -115,6 +116,11 @@ execute_target_file() {
 	fi
 
 	cd "$(dirname "$target_filepath")"
+	if [ ! -x "$target_filepath" ]; then
+		echo "Error: Target file \"$f\" has no execute permissions."
+		exit $ENOPERMS
+	fi
+
 	"$target_filepath"
 	
 	exit 0
