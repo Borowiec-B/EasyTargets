@@ -237,7 +237,14 @@ print_unique_target_names() {
 }
 
 target_exists() {
-	local all_tags="$(print_target_tags)"
+	local all_tags
+	all_tags="$(print_target_tags)"
+	local print_status=$?
+
+	if [ $print_status -ne 0 ]; then
+		return $print_status
+	fi
+
 	local arg_tag="[${1}]"
 	local arg_tag_found="false"
 
