@@ -69,7 +69,7 @@ upfind_file() {
 	return $ENOTFOUND
 }
 
-# find_target_file(): Call upfind_file() with $f, which is either argument given to -f/--target-file, or $default_f.
+# find_target_file(): Try to find target file, print its absolute path on success.
 #
 #   Errors:
 #     $ENOTFOUND - $f was not found.
@@ -87,7 +87,7 @@ find_target_file() {
 	return 0
 }
 
-# find_targets_file(): Call upfind_file() with $F, which is either argument given to -F/--targets-file, or $default_F.
+# find_targets_file(): Try to find targets file, print its absolute path on success.
 #
 #   Errors:
 #     $ENOTFOUND - $F was not found.
