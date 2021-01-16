@@ -133,13 +133,13 @@ execute_target_file() {
 }
 
 create_target_file_in_targets_dir() {
-	local targets_filepath
-	targets_filepath="$(find_targets_file)"
-	local search_status=$?
-
 	if [ -z "$f" ]; then
 		return $EMISSINGARG
 	fi
+
+	local targets_filepath
+	targets_filepath="$(find_targets_file)"
+	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
 		return $search_status
