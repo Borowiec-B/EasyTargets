@@ -132,6 +132,13 @@ execute_target_file() {
 	exit 0
 }
 
+# create_target_file_in_targets_dir(): Find targets file, create $f in its directory, and set permissions.
+#
+#   Errors:
+#     $EMISSINGARG - $f is unset.
+#     $ENOTCREATED - target file could not be created.
+#     $ENOTFOUND   - targets file was not found.
+#
 create_target_file_in_targets_dir() {
 	if [ -z "$f" ]; then
 		return $EMISSINGARG
