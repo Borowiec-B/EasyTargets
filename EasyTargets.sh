@@ -225,6 +225,15 @@ is_valid_integer() {
 	return $(true)
 }
 
+# print_nth_line(): Print line no. $1 of shifted by one "$@".
+#
+#   Args:
+#     $1 - Positive [1, inf) index of line to print.
+#
+#   Errors:
+#     $EINVALIDARG - $1 is not an integer, or is not in [1, inf).
+#     $ENOTFOUND   - $1 is higher than "$@"'s amount of lines.
+#
 print_nth_line() {
 	local n="$1"
 	shift
