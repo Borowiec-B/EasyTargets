@@ -303,6 +303,12 @@ print_target_tags() {
 	return 0
 }
 
+# print_unique_target_names(): Get all tags, strip them of '[' and ']', and print unique values.
+#
+#   Errors:
+#     $ENOTFOUND - Targets file was not found.
+#     $ERDERROR  - Targets file was found, but couldn't be read.
+#
 print_unique_target_names() {
 	local tags targets=""
 	tags="$(print_target_tags)"
