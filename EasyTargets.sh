@@ -32,6 +32,8 @@ if [ $getopt_status -ne 0 ]; then
 	exit $EINVALIDARG
 fi
 
+# remove_duplicate_lines(): Print all unique lines of "$@".
+#
 remove_duplicate_lines() {
 	awk '!seen[$0]++' <<< "$@"
 	return 0
