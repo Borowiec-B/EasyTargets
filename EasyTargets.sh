@@ -174,13 +174,13 @@ create_target_file_in_targets_dir() {
 	return 0
 }
 
-# write_target_file(): Find target file, or create one next to targets file on failure, and replace its contents with "$@".
+# write_target_file(): Find target file, or create one next to targets file on failure, and replace its content with "$@".
 #
 #   Errors:
 #     $EMISSINGARG - $f is unset.
 #     $ENOTCREATED - Target file was not found, and a new one couldn't be created.
 #     $ENOTFOUND   - Targets file was not found.
-#     $EWRERROR    - Target's contents couldn't be replaced.
+#     $EWRERROR    - Target's content couldn't be replaced.
 #
 write_target_file() {
 	local target_filepath
@@ -253,7 +253,7 @@ print_nth_line() {
 }
 
 
-# print_targets_file(): Try to find the targets file and print its contents.
+# print_targets_file(): Try to find the targets file and print its content.
 #
 #   Errors:
 #     $ENOTFOUND - Targets file was not found.
