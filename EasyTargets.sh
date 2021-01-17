@@ -446,6 +446,14 @@ remove_whitespace_lines() {
 	return 0
 }
 
+# select_target(): Present unique target names from targets file to user, ask to choose one, and replace target's file content with target's content.
+#
+#   Errors:
+#     $ENOTFOUND   - Targets file was not found.
+#     $ENOTCREATED - Target file was not found, and a new one couldn't be created.
+#     $ERDERROR    - Targets file could not be read.
+#     $EWRERROR    - Target's file content couldn't be replaced.
+#
 select_target() {
 	local targets_prompt_separator="---"
 	local prompt="Select target: "
