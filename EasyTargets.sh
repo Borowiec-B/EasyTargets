@@ -428,7 +428,7 @@ prefix_with_line_numbers() {
 	return 0
 }
 
-remove_line_number_prefixes() {
+remove_line_numbers() {
 	local number_prefix="["
 	local number_suffix="]: "
 
