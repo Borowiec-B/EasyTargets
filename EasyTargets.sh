@@ -438,6 +438,8 @@ remove_line_numbers() {
 	return 0
 }
 
+# remove_whitespace_lines(): Print each line of "$@", except those with only whitespace.
+#
 remove_whitespace_lines() {
 	sed '/^\s*$/d' <<< "$@"
 
