@@ -505,6 +505,15 @@ select_target() {
 	return 0
 }
 
+# select_target_by_menu(): Print unique target names to "$m"'s stdin for the user to choose, and replace target file's content with chosen target's content.
+#
+#   Errors:
+#     $ENOTCREATED - Target file was not found, and a new one couldn't be created.
+#     $ENOTFOUND   - Targets file was not found.
+#     $EOTHER      - Menu returned error, or didn't output target's name, or output invalid name.
+#     $ERDERROR    - Targets file could not be read.
+#     $EWRERROR    - Target's file content couldn't be replaced.
+#
 select_target_by_menu() {
 	if [ -z "$m" ]; then
 		echo "Error: Menu not supplied to select_target_by_menu()."
