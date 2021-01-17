@@ -358,6 +358,13 @@ target_exists() {
 	fi
 }
 
+# print_target_content(): Print target $1's content.
+#                         That is, everything below target's tag until next tag or end of file.
+#
+#   Errors:
+#     $ENOTFOUND - Targets file or target's content was not found.
+#     $ERDERROR  - Targets file was found, but couldn't be read.
+#
 print_target_content() {
 	local tags
 	tags="$(print_target_tags)"
