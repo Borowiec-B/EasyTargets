@@ -281,6 +281,13 @@ print_targets_file() {
 	return 0
 }
 
+# print_target_tags(): Print line-separated tags found in targets file.
+#                      Tag is '[target_name]' from line in form of '[target_name]optional_whitespace'
+#
+#   Errors:
+#     $ENOTFOUND - Targets file was not found.
+#     $ERDERROR  - Targets file was found, but couldn't be read.
+#
 print_target_tags() {
 	local targets_file
 	targets_file="$(print_targets_file)"
