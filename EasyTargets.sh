@@ -406,6 +406,9 @@ print_target_content() {
 	return 0
 }
 
+# prefix_with_line_numbers(): Print each line of "$@" with "[${index}] " added at the beginning.
+#                             Index starts at 1, and goes up one with each line.
+#
 prefix_with_line_numbers() {
 	local number_prefix="["
 	local line_number=1
