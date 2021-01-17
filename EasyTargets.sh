@@ -363,12 +363,8 @@ print_target_content() {
 	tags="$(print_target_tags)"
 	print_status=$?
 
-	if [ $print_status -eq $ENOTFOUND ]; then
-		echo "Error: Failed to find target file \"$f\"."
-		exit $ENOTFOUND
-	elif [ $print_status -eq $ERDERROR ]; then
-		echo "Error: Found, but failed to read target file \"$f\."
-		exit $ERDERROR
+	if [ $print_status -ne 0 ]; then
+		return $print_status
 	fi
 
 	local arg_tag="[$1]"
