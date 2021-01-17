@@ -428,6 +428,8 @@ prefix_with_line_numbers() {
 	return 0
 }
 
+# remove_line_numbers(): Remove text from each line of "$@" added by prefix_with_line_numbers(), and print results.
+#
 remove_line_numbers() {
 	local number_prefix="["
 	local number_suffix="]: "
