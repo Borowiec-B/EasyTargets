@@ -323,6 +323,15 @@ print_unique_target_names() {
 	return 0
 }
 
+# target_exists(): Check if targets file contains a tag corresponding to target name $1. Returns $(true) or $(false).
+#
+#   Args:
+#     $1 - Target name.
+#
+#   Errors:
+#     $ENOTFOUND - Targets file was not found.
+#     $ERDERROR  - Targets file was found, but couldn't be read.
+#
 target_exists() {
 	local all_tags
 	all_tags="$(print_target_tags)"
