@@ -27,7 +27,7 @@ declare -ir EOTHER=255
 
 
 if [ $getopt_status -ne 0 ]; then
-	echo -e "Invalid options.\n"
+	echo -e "Error: Invalid options.\n"
 	echo "$usage"
 	exit $EINVALIDARG
 fi
