@@ -208,7 +208,7 @@ write_target_file() {
 	return 0
 }
 
-# is_valid_integer(): Check if "$@" is a one-line, valid integer. Returns $(false) or $(true).
+# is_valid_integer(): Check if "$@" is a one-line, valid integer. Returns $(true) or $(false).
 #
 is_valid_integer() {
 	local lines_in_input="$(wc --lines <<< "$@")"
