@@ -1,13 +1,35 @@
 #!/usr/bin/sh
 
-options="ef:F:lm:s"
-longopts="execute,list,menu:,select,target-file:,targets-file:"
+options="ef:F:hlm:s"
+longopts="execute,help,list,menu:,select,target-file:,targets-file:"
 progname="EasyTargets"
 new_args="$(getopt --quiet --options "$options" --longoptions "$longopts" --name "$progname" -- "$@")"
 getopt_status=$?
-usage="Usage: (to be written)"
+usage=\
+"Usage: EasyTargets.sh [OPTION]...
+
+  -e, --execute             Execute target file.
+  -f, --target-file=FILE    Override target filepath with FILE. (default: .target)
+  -F, --targets-file=FILE   Override targets filepath with FILE. (default: .targets)
+  -h, --help                Print this message.
+  -m, --menu=MENU           Use MENU for -s/--select instead of terminal.
+  -s, --select              Choose content from targets file (default: \".targets\")
+                            to replace target file's content.
+
+Used targets file will be FILE if it's an absolute path, or first occurence of
+FILE found upwards from working directory if it's relative.
+
+Used target file will be \"targets_file_directory/FILE\" if it exists,
+or - if not - first occurence of FILE found upwards from working directory.
+
+If -s/--select is selected, and target file is not found, -f's FILE will be
+created in targets file directory and used as target file.
+
+If -m/--menu is selected, -s/--select will pipe target names found in targets file
+to MENU's stdin line-by-line, and expect stdout to return one of these lines."
 
 e="false"
+h="false"
 l="false"
 m=""
 s="false"
@@ -588,6 +610,10 @@ while true; do
 			F="$2"
 			shift 2
 			;;
+		"-h"|"--help")
+			h="true"
+			shift
+			;;
 		"-l"|"--list")
 			l="true"
 			shift
@@ -617,6 +643,11 @@ fi
 
 if [ -z "$F" ]; then
 	F="$default_F"
+fi
+
+if [ "$h" = "true" ]; then
+	echo "$usage"
+	exit 0
 fi
 
 if [ "$l" = "true" ]; then
