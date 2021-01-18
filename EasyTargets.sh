@@ -71,14 +71,14 @@ upfind_file() {
 	return $ENOTFOUND
 }
 
-# find_target_file(): Try to find target file, print its absolute path on success.
+# find_targets_file(): Try to find targets file, print its absolute path on success.
 #
 #   Errors:
-#     $ENOTFOUND - $f was not found.
+#     $ENOTFOUND - $F was not found.
 #
-find_target_file() {
+find_targets_file() {
 	local filepath
-	filepath="$(upfind_file "$f")"
+	filepath="$(upfind_file "$F")"
 	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
@@ -89,14 +89,28 @@ find_target_file() {
 	return 0
 }
 
-# find_targets_file(): Try to find targets file, print its absolute path on success.
-#
+# find_target_file(): Try to find target file, print its absolute path on success.
+#                     Checks targets file's directory first. On fail, searches upwards.
 #   Errors:
-#     $ENOTFOUND - $F was not found.
+#     $ENOTFOUND - $f was not found.
 #
-find_targets_file() {
+find_target_file() {
+	local targets_filepath
+	targets_filepath="$(find_targets_file)"
+	local search_status=$?
+	
+	# If targets file is found, first check if $f exists in its directory.
+	if [ $search_status -eq 0 ]; then
+		local target_file_in_targets_dir="$(dirname "$targets_filepath")/$f"
+		if [ -f "$target_file_in_targets_dir" ]; then
+			echo "$target_file_in_targets_dir"
+			return 0
+		fi
+	fi
+
+	# If not, start searching upwards for $f, starting from cwd.
 	local filepath
-	filepath="$(upfind_file "$F")"
+	filepath="$(upfind_file "$f")"
 	local search_status=$?
 
 	if [ $search_status -ne 0 ]; then
