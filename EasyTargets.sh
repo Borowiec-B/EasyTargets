@@ -71,6 +71,7 @@ remove_duplicate_lines() {
 #
 upfind_file() {
 	local filename="$1"
+
 	# A little edge case, without this "/" argument prints cwd.
 	if [ "$filename" = "/" ]; then
 		echo "/"
