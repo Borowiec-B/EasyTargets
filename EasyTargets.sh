@@ -711,6 +711,7 @@ fi
 
 if [ "$l" = "true" ]; then
 	print_unique_target_names
+	exit 0
 fi
 
 if [ "$s" = "true" ]; then
