@@ -9,8 +9,8 @@ usage=\
 "Usage: EasyTargets.sh [OPTION]...
 
   -e, --execute             Execute target file.
-  -f, --target-file=FILE    Override target filepath with FILE. (default: .target)
-  -F, --targets-file=FILE   Override targets filepath with FILE. (default: .targets)
+  -f, --target-file=FILE    Override target filepath with FILE. (default: \".target\")
+  -F, --targets-file=FILE   Override targets filepath with FILE. (default: \".targets\")
   -h, --help                Print this message.
   -m, --menu=MENU           Use MENU for -s/--select instead of terminal.
   -s, --select              Choose content from targets file (default: \".targets\")
