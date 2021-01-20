@@ -1,7 +1,7 @@
 #!/usr/bin/sh
 
-options="ef:F:hlm:s"
-longopts="execute,help,list,menu:,select,target-file:,targets-file:"
+options="ef:F:hlm:st:"
+longopts="execute,help,list,menu:,select,target:,target-file:,targets-file:"
 progname="EasyTargets"
 new_args="$(getopt --quiet --options "$options" --longoptions "$longopts" --name "$progname" -- "$@")"
 getopt_status=$?
@@ -15,6 +15,9 @@ usage=\
   -m, --menu=MENU           Use MENU for -s/--select instead of terminal.
   -s, --select              Choose content from targets file (default: \".targets\")
                             to replace target file's content.
+  -t, --target=TARGET       Make -e/--execute only execute TARGET's content from
+                            targets file, completely ignoring target file.
+                            Working directory will be targets file's directory.
 
 Used targets file will be FILE if it's an absolute path, or first occurence of
 FILE found upwards from working directory if it's relative.
@@ -37,6 +40,7 @@ f=""
 default_f=".target"
 F=""
 default_F=".targets"
+t=""
 
 declare -ir ENOTFOUND=1
 declare -ir EMISSINGARG=2
@@ -485,6 +489,56 @@ remove_whitespace_lines() {
 	return 0
 }
 
+execute_target() {
+	local targets_file
+	targets_file="$(find_targets_file)"
+	local search_status=$?
+
+	if [ $search_status -ne 0 ]; then
+		echo "Error: Targets file \"$F\" was not found."
+		exit $ENOTFOUND
+	fi
+
+	if ! target_exists "$t"; then
+		echo "Error: Target \"$t\" was not found in targets file."
+		exit $ENOTFOUND
+	fi
+
+	local saved_f="$f"
+	f="$(mktemp --suffix="_EasyTargets")"
+	
+	local create_status=$?
+	if [ $create_status -ne 0 ]; then
+		echo "Error: Failed to create temporary target file \"$f\"."
+		rm "$f"
+		exit $ENOTCREATED
+	fi
+
+	chmod u+x "$f"
+	local chmod_status=$?
+	if [ $chmod_status -ne 0 ]; then
+		echo "Error: Failed to give executable permissions to temporary target file \"$f\"."
+		rm "$f"
+		exit $ENOTCREATED
+	fi
+
+	write_target_file "$(print_target_content "$t")"
+	local write_status=$?
+	if [ $write_status -ne 0 ]; then
+		echo "Error: Failed to write to temporary target file \"$f\"."
+		rm "$f"
+		exit $EWRERROR
+	fi
+
+	cd "$(dirname "$targets_file")"
+	"$f"
+	rm "$f"
+
+	# Restoring saved f in case this function will return instead of exit in the future.
+	f="$saved_f"
+	exit 0
+}
+
 # select_target(): Present unique target names from targets file to user, ask to choose one, and replace target's file content with target's content.
 #
 #   Errors:
@@ -627,6 +681,10 @@ while true; do
 			s="true"
 			shift
 			;;
+		"-t"|"--target")
+			t="$2"
+			shift 2
+			;;
 		--)
 			shift
 			break
@@ -664,6 +722,10 @@ if [ "$s" = "true" ]; then
 fi
 
 if [ "$e" = "true" ]; then
-	execute_target_file
+	if [ ! -z "$t" ]; then
+		execute_target
+	else
+		execute_target_file
+	fi
 fi
 
