@@ -42,13 +42,13 @@ F=""
 default_F=".targets"
 t=""
 
-declare -ir ENOTFOUND=1
-declare -ir EMISSINGARG=2
-declare -ir EINVALIDARG=3
-declare -ir ENOTCREATED=4
-declare -ir ERDERROR=5
-declare -ir EWRERROR=6
-declare -ir ENOPERMS=7
+declare -ir ENOTFOUND=2
+declare -ir EMISSINGARG=3
+declare -ir EINVALIDARG=4
+declare -ir ENOTCREATED=5
+declare -ir ERDERROR=6
+declare -ir EWRERROR=7
+declare -ir ENOPERMS=8
 declare -ir EOTHER=255
 
 
