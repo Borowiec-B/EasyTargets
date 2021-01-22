@@ -499,7 +499,20 @@ execute_target() {
 		exit $ENOTFOUND
 	fi
 
-	if ! target_exists "$t"; then
+	target_exists "$t"
+	local target_exists_status=$?
+
+	if [ $target_exists_status -eq $ENOTFOUND ];  then
+		echo "Error: Targets file \"$F\" was not found."
+		exit $ENOTFOUND
+	fi
+
+	if [ $target_exists_status -eq $ERDERROR ]; then
+		echo "Error: Failed to read targets file \"$F\"."
+		exit $ERDERROR
+	fi
+
+	if [ $target_exists_status -eq 1 ]; then
 		echo "Error: Target \"$t\" was not found in targets file."
 		exit $ENOTFOUND
 	fi
