@@ -489,6 +489,18 @@ remove_whitespace_lines() {
 	return 0
 }
 
+# execute_target(): Execute target "$t" without modifying target file.
+#
+#   Args:
+#     $F - Targets filepath.
+#     $t - Target name.
+#
+#   Errors:
+#     $ENOTCREATED - Failed to create temporary target file.
+#     $ENOTFOUND   - Targets file or target was not found.
+#     $ERDERROR    - Targets file was found, but couldn't be read.
+#     $EWRERROR    - Temporary target file was created, but writing to it failed.
+#
 execute_target() {
 	local targets_file
 	targets_file="$(find_targets_file)"
