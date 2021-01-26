@@ -161,18 +161,18 @@ execute_target_file() {
 
 	if [ $search_status -ne 0 ]; then
 		echo "Error: Target file \"$f\" was not found."
-		exit $search_status
+		return $search_status
 	fi
 
 	cd "$(dirname "$target_filepath")"
 	if [ ! -x "$target_filepath" ]; then
 		echo "Error: Target file \"$f\" has no execute permissions."
-		exit $ENOPERMS
+		return $ENOPERMS
 	fi
 
 	"$target_filepath"
 	
-	exit 0
+	return 0
 }
 
 # create_target_file_in_targets_dir(): Find targets file, create $f in its directory, and set permissions. Print resulting absolute filepath.
@@ -508,7 +508,7 @@ execute_target() {
 
 	if [ $search_status -ne 0 ]; then
 		echo "Error: Targets file \"$F\" was not found."
-		exit $ENOTFOUND
+		return $ENOTFOUND
 	fi
 
 	target_exists "$t"
@@ -516,17 +516,17 @@ execute_target() {
 
 	if [ $target_exists_status -eq $ENOTFOUND ];  then
 		echo "Error: Targets file \"$F\" was not found."
-		exit $ENOTFOUND
+		return $ENOTFOUND
 	fi
 
 	if [ $target_exists_status -eq $ERDERROR ]; then
 		echo "Error: Failed to read targets file \"$F\"."
-		exit $ERDERROR
+		return $ERDERROR
 	fi
 
 	if [ $target_exists_status -eq 1 ]; then
 		echo "Error: Target \"$t\" was not found in targets file."
-		exit $ENOTFOUND
+		return $ENOTFOUND
 	fi
 
 	local saved_f="$f"
@@ -536,7 +536,7 @@ execute_target() {
 	if [ $create_status -ne 0 ]; then
 		echo "Error: Failed to create temporary target file \"$f\"."
 		rm "$f"
-		exit $ENOTCREATED
+		return $ENOTCREATED
 	fi
 
 	chmod u+x "$f"
@@ -544,7 +544,7 @@ execute_target() {
 	if [ $chmod_status -ne 0 ]; then
 		echo "Error: Failed to give executable permissions to temporary target file \"$f\"."
 		rm "$f"
-		exit $ENOTCREATED
+		return $ENOTCREATED
 	fi
 
 	write_target_file "$(print_target_content "$t")"
@@ -552,16 +552,15 @@ execute_target() {
 	if [ $write_status -ne 0 ]; then
 		echo "Error: Failed to write to temporary target file \"$f\"."
 		rm "$f"
-		exit $EWRERROR
+		return $EWRERROR
 	fi
 
 	cd "$(dirname "$targets_file")"
 	"$f"
 	rm "$f"
 
-	# Restoring saved f in case this function will return instead of exit in the future.
 	f="$saved_f"
-	exit 0
+	return 0
 }
 
 # select_target(): Present unique target names from targets file to user, ask to choose one, and replace target's file content with target's content.
@@ -583,10 +582,10 @@ select_target() {
 
 	if [ $print_status -eq $ENOTFOUND ]; then
 		echo "Error: Couldn't find targets file \"$F\"."
-		exit $ENOTFOUND
+		return $ENOTFOUND
 	elif [ $print_status -eq $ERDERROR ]; then
 		echo "Error: Found, but couldn't read targets file \"$F\"."
-		exit $ERDERROR
+		return $ERDERROR
 	fi
 
 	numbered_target_names="$(prefix_with_line_numbers "$target_names")"
@@ -614,10 +613,10 @@ select_target() {
 
 	if [ $target_write_status -eq $ENOTCREATED ]; then
 		echo "Error: Failed to find, then failed to create missing target file \"$f\"."
-		exit $ENOTCREATED
+		return $ENOTCREATED
 	elif [ $target_write_status -eq $EWRERROR ]; then
 		echo "Error: Failed to write to target file \"$f\"."
-		exit $EWRERROR
+		return $EWRERROR
 	fi
 
 	return 0
@@ -635,7 +634,7 @@ select_target() {
 select_target_by_menu() {
 	if [ -z "$m" ]; then
 		echo "Error: Menu not supplied to select_target_by_menu()."
-		exit $EMISSINGARG
+		return $EMISSINGARG
 	fi
 
 	local target_names
@@ -644,10 +643,10 @@ select_target_by_menu() {
 
 	if [ $print_status -eq $ENOTFOUND ]; then
 		echo "Error: Couldn't find targets file \"$F\"."
-		exit $ENOTFOUND
+		return $ENOTFOUND
 	elif [ $print_status -eq $ERDERROR ]; then
 		echo "Error: Found, but couldn't read targets file \"$F\"."
-		exit $ERDERROR
+		return $ERDERROR
 	fi
 
 	local selected_target_name;
@@ -656,7 +655,7 @@ select_target_by_menu() {
 
 	if [ $menu_status -ne 0 ] || [ -z "$selected_target_name" ] || ! target_exists "$selected_target_name" ; then
 		echo "Failed to get target name through menu: \"$m\"."
-		exit $EOTHER
+		return $EOTHER
 	fi
 
 	write_target_file "$(print_target_content "$selected_target_name")"
@@ -664,10 +663,10 @@ select_target_by_menu() {
 
 	if [ $write_status -eq $ENOTCREATED ]; then
 		echo "Error: Failed to find, then failed to create missing target file \"$f\"."
-		exit $ENOTCREATED
+		return $ENOTCREATED
 	elif [ $write_status -eq $EWRERROR ]; then
 		echo "Error: Failed to write to target file \"$f\"."
-		exit $EWRERROR
+		return $EWRERROR
 	fi
 
 	return 0
@@ -742,16 +741,20 @@ fi
 if [ "$s" = "true" ]; then
 	if [ ! -z "$m" ]; then
 		select_target_by_menu
+		exit $?
 	else
 		select_target
+		exit $?
 	fi
 fi
 
 if [ "$e" = "true" ]; then
 	if [ ! -z "$t" ]; then
 		execute_target
+		exit $?
 	else
 		execute_target_file
+		exit $?
 	fi
 fi
 
