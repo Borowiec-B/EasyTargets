@@ -758,3 +758,6 @@ if [ "$e" = "true" ]; then
 	fi
 fi
 
+echo "$usage"
+exit $EMISSINGARG
+
