@@ -763,6 +763,12 @@ while true; do
 	esac
 done
 
+if n_booleans_are_true 2 "$h" "$l" "$s" "$e"; then
+	echo -e "Error: Only one of following flags is allowed: -e, -h, -l, -s.\n"
+	echo "$usage"
+	exit $EINVALIDARG
+fi
+
 if [ -z "$f" ]; then
 	f="$default_f"
 fi
