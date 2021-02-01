@@ -71,7 +71,7 @@ remove_duplicate_lines() {
 # upfind_file(): Check if file $examined_directory/$1 exists, print the resulting absolute path on success.
 #				 Examined directory is at first cwd, then enters a loop of going up and checking until / is hit.
 #   Args:
-#     $1 - filename or filepath.
+#     $1 - Filename or filepath.
 #
 #   Errors:
 #     $ENOTFOUND - Argument was not found.
