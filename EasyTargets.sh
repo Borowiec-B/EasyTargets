@@ -51,11 +51,14 @@ declare -ir EWRERROR=7
 declare -ir ENOPERMS=8
 declare -ir EOTHER=255
 
-
-if [ $getopt_status -ne 0 ]; then
+exit_invalid_options() {
 	echo -e "Error: Invalid options.\n"
 	echo "$usage"
 	exit $EINVALIDARG
+}
+
+if [ $getopt_status -ne 0 ]; then
+	exit_invalid_options
 fi
 
 # remove_duplicate_lines(): Print all unique lines of "$@".
