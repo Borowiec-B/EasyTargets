@@ -271,6 +271,36 @@ is_valid_integer() {
 	return $(true)
 }
 
+n_booleans_are_true() {
+	if [ -z "$1" ]; then
+		return $EMISSINGARG
+	fi
+
+	if ! is_valid_integer "$1"; then
+		return $EINVALIDARG
+	fi
+
+	declare -ir target="$1"
+	if [ $target -eq 0 ]; then
+		return $(true)
+	fi
+
+	shift
+
+	declare -i true_counter=0
+	for arg in "$@"; do
+		if [ "$arg" = "true" ]; then
+			true_counter=$((true_counter + 1))
+		fi
+
+		if [ $true_counter -ge $target ]; then
+			return $(true)
+		fi
+	done
+
+	return $(false)
+}
+
 # print_nth_line(): Print line no. $1 of shifted by one "$@".
 #
 #   Args:
