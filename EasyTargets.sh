@@ -271,6 +271,16 @@ is_valid_integer() {
 	return $(true)
 }
 
+# n_booleans_are_true(): Return $(true) if at least n variables out of $2..$m are true. $(false) otherwise.
+#
+#   Args:
+#     $1       - Minimum count of variables needed to be "true" to return success.
+#     $2..$m   - Variables to be tested.
+#
+#   Errors:
+#     $EINVALIDARG - $1 is not a valid integer.
+#     $EMISSINGARG - $1 is empty.
+#
 n_booleans_are_true() {
 	if [ -z "$1" ]; then
 		return $EMISSINGARG
