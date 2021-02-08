@@ -103,6 +103,9 @@ upfind_file() {
 
 # find_targets_file(): Try to find targets file, print its absolute path on success.
 #
+#   Args:
+#     $F - Relative or absolute path to targets file.
+#
 #   Errors:
 #     $ENOTFOUND - $F was not found.
 #
@@ -121,6 +124,11 @@ find_targets_file() {
 
 # find_target_file(): Try to find target file, print its absolute path on success.
 #                     Checks targets file's directory first. On fail, searches upwards.
+#
+#   Args:
+#     $f - Relative or absolute path to target file.
+#     $F - Relative or absolute path to targets file.
+#
 #   Errors:
 #     $ENOTFOUND - $f was not found.
 #
@@ -153,6 +161,10 @@ find_target_file() {
 
 # execute_target_file(): Find target file, cd into its directory and execute it.
 #
+#   Args:
+#     $f - Relative or absolute path to target file.
+#     $F - Relative or absolute path to targets file.
+#
 #   Errors:
 #     $ENOTFOUND - Target file was not found.
 #     $ENOPERMS  - Found file's permissions don't allow executing.
@@ -179,6 +191,10 @@ execute_target_file() {
 }
 
 # create_target_file_in_targets_dir(): Find targets file, create $f in its directory, and set permissions. Print resulting absolute filepath.
+#
+#   Args:
+#     $f - Relative or absolute path to target file.
+#     $F - Relative or absolute path to targets file.
 #
 #   Errors:
 #     $EMISSINGARG - $f is unset.
@@ -221,6 +237,10 @@ create_target_file_in_targets_dir() {
 }
 
 # write_target_file(): Find target file, or create one next to targets file on failure, and replace its content with "$@".
+#
+#   Args:
+#     $f - Relative or absolute path to target file.
+#     $F - Relative or absolute path to targets file.
 #
 #   Errors:
 #     $EMISSINGARG - $f is unset.
@@ -341,6 +361,9 @@ print_nth_line() {
 
 # print_targets_file(): Try to find the targets file and print its content.
 #
+#   Args:
+#     $F - Relative or absolute path to targets file.
+#
 #   Errors:
 #     $ENOTFOUND - Targets file was not found.
 #     $ERDERROR  - Targets file was found, but couldn't be read.
@@ -370,6 +393,9 @@ print_targets_file() {
 # print_target_tags(): Print line-separated tags found in targets file.
 #                      Tag is '[target_name]' from line in form of '[target_name]optional_whitespace'
 #
+#   Args:
+#     $F - Relative or absolute path to targets file.
+#
 #   Errors:
 #     $ENOTFOUND - Targets file was not found.
 #     $ERDERROR  - Targets file was found, but couldn't be read.
@@ -390,6 +416,9 @@ print_target_tags() {
 }
 
 # print_unique_target_names(): Get all tags, strip them of '[' and ']', and print unique values.
+#
+#   Args:
+#     $F - Relative or absolute path to targets file.
 #
 #   Errors:
 #     $ENOTFOUND - Targets file was not found.
@@ -413,6 +442,7 @@ print_unique_target_names() {
 #
 #   Args:
 #     $1 - Target name.
+#     $F - Relative or absolute path to targets file.
 #
 #   Errors:
 #     $ENOTFOUND - Targets file was not found.
@@ -446,6 +476,10 @@ target_exists() {
 
 # print_target_content(): Print target $1's content.
 #                         That is, everything below target's tag until next tag or end of file.
+#
+#   Args:
+#     $1 - Target name.
+#     $F - Relative or absolute path to targets file.
 #
 #   Errors:
 #     $ENOTFOUND - Targets file or target's content was not found.
@@ -495,6 +529,9 @@ print_target_content() {
 # prefix_with_line_numbers(): Print each line of "$@" with "[${index}] " added at the beginning.
 #                             Index starts at 1, and goes up one with each line.
 #
+#   Args:
+#     $@ - Lines to be prefixed.
+#
 prefix_with_line_numbers() {
 	local number_prefix="["
 	local line_number=1
@@ -516,6 +553,9 @@ prefix_with_line_numbers() {
 
 # remove_line_numbers(): Remove text from each line of "$@" added by prefix_with_line_numbers(), and print results.
 #
+#   Args:
+#     $@ - Lines to be printed without prefixes.
+#
 remove_line_numbers() {
 	local number_prefix="["
 	local number_suffix="]: "
@@ -526,6 +566,9 @@ remove_line_numbers() {
 
 # remove_whitespace_lines(): Print each line of "$@", except those with only whitespace.
 #
+#   Args:
+#     $@ - Lines to be printed, except for whitespace-only.
+#
 remove_whitespace_lines() {
 	sed '/^\s*$/d' <<< "$@"
 
@@ -535,7 +578,7 @@ remove_whitespace_lines() {
 # execute_target(): Execute target "$t" without modifying target file.
 #
 #   Args:
-#     $F - Targets filepath.
+#     $F - Relative or absolute path to targets file.
 #     $t - Target name.
 #
 #   Errors:
@@ -608,6 +651,10 @@ execute_target() {
 
 # select_target(): Present unique target names from targets file to user, ask to choose one, and replace target's file content with target's content.
 #
+#   Args:
+#     $f - Relative or absolute path to target file.
+#     $F - Relative or absolute path to targets file.
+#
 #   Errors:
 #     $ENOTFOUND   - Targets file was not found.
 #     $ENOTCREATED - Target file was not found, and a new one couldn't be created.
@@ -666,6 +713,11 @@ select_target() {
 }
 
 # select_target_by_menu(): Print unique target names to "$m"'s stdin for the user to choose, and replace target file's content with chosen target's content.
+#
+#   Args:
+#     $m - Command to be fed a Here String of target names.
+#     $F - Relative or absolute path to targets file.
+#     $f - Relative or absolute path to target file.
 #
 #   Errors:
 #     $ENOTCREATED - Target file was not found, and a new one couldn't be created.
